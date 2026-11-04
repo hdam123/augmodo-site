@@ -1,0 +1,293 @@
+/* Neue Haas Grotesk Text Pro (supplied): 55 Roman for body copy, 65 Medium for lists, quotes, buttons and the wordmark. */
+@font-face { font-family: "NHG Text"; src: url("./fonts/NHaasGroteskTXPro-55Rg.ttf") format("truetype"); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: "NHG Text"; src: url("./fonts/NHaasGroteskTXPro-65Md.ttf") format("truetype"); font-weight: 500; font-style: normal; font-display: block; }
+
+/* All geometry is in Figma px on the 1440 frame, scaled by --u (set from JS = viewport width / 1440). */
+:root {
+  --u: calc(100vw / 1440);
+  --ink: #1f1f1f;
+  --ink-2: #2d2d2d;
+  --violet: #594bff;
+  --violet-soft: rgba(195, 196, 255, 0.6);
+  /* Headings: the shipped Neue Haas Grotesk Text Pro 55 Roman at regular weight (Display Pro 45 Light isn't
+     included, and its Helvetica Neue Light fallback renders far thinner than the design). */
+  --f-display: "NHG Text", "Neue Haas Grotesk Display Pro", "Helvetica Neue", "Inter Tight", Arial, sans-serif;
+  --f-text: "NHG Text", "Neue Haas Grotesk Text Pro", "NeueHaasText", "Helvetica Neue", "Inter", Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--ink); }
+body {
+  margin: 0;
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--f-text);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { display: block; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; }
+h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
+
+.h-display {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: calc(var(--u) * 48);
+  line-height: 1;
+  letter-spacing: -0.005em;
+  color: #fff;
+}
+.body {
+  font-family: var(--f-text);
+  font-weight: 400;
+  font-size: calc(var(--u) * 16);
+  line-height: 1.25;
+  color: #fff;
+}
+.split-line { will-change: transform; }
+/* Room for descenders/accents inside the reveal masks without shifting layout. */
+.line-mask, .rb-mask { padding: 0.08em 0 0.28em; margin: -0.08em 0 -0.28em; }
+
+/* ── Header ───────────────────────────── */
+.site-header { position: fixed; inset: 0 0 auto 0; height: 0; z-index: 50; pointer-events: none; }
+.site-header a { pointer-events: auto; }
+.logo { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 30); width: calc(var(--u) * 315); height: calc(var(--u) * 47); }
+.logo-icon { position: absolute; left: 0; top: calc(var(--u) * 5.034); width: calc(var(--u) * 93.607); height: calc(var(--u) * 42.119); }
+.logo-icon--white { opacity: 0; visibility: hidden; }
+.logo-word {
+  position: absolute; left: calc(var(--u) * 99.25); top: 0;
+  font-family: var(--f-text); font-weight: 500;
+  font-size: calc(var(--u) * 50.163); line-height: 0.9; letter-spacing: -0.01em; white-space: nowrap;
+}
+.nav { position: absolute; top: calc(var(--u) * 30); right: calc(var(--u) * 60); display: flex; gap: calc(var(--u) * 20); }
+.nav a { font-size: calc(var(--u) * 14); line-height: 1.1; white-space: nowrap; transition: color .2s; }
+.nav a:hover { color: #c3c4ff; }
+
+/* ── Intro: hero + video ──────────────── */
+.intro { position: relative; height: 100vh; background: var(--ink); overflow: hidden; }
+.hero-copy { position: absolute; inset: 0; }
+.hero-title { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 202.23); width: calc(var(--u) * 488.29); font-family: var(--f-display); font-weight: 400; font-size: calc(var(--u) * 48); line-height: 1; letter-spacing: -0.005em; }
+.hero-sub { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 319); width: calc(var(--u) * 369); font-size: calc(var(--u) * 16); line-height: 1.25; }
+.hero-btn {
+  position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 379.07);
+  padding: calc(var(--u) * 11.303) calc(var(--u) * 22.606);
+  background: rgba(189, 189, 189, 0.5);
+  font-weight: 500; font-size: calc(var(--u) * 13.564); line-height: calc(var(--u) * 17);
+  text-transform: uppercase; transition: background .25s;
+}
+.hero-btn:hover { background: #c3c4ff; }
+
+.video {
+  position: absolute; left: 0; top: 0; width: 100%; height: 100vh; overflow: hidden; background: #000; z-index: 2;
+  transform: translateY(calc(var(--u) * 479));
+  /* Starts inset to the 60px page margins, opens to full bleed as it rises (Intro timeline). */
+  clip-path: inset(0px calc(var(--u) * 60) 0px calc(var(--u) * 60));
+  will-change: transform, clip-path;
+}
+/* Thumbnail = Figma frame "–" (49:1712): 1802.67 × 1014, centred and mirrored, store photo
+   with the point-cloud scan on what ends up as the left half. */
+.video-frame {
+  position: absolute; left: calc(50% - var(--u) * 901.333); top: calc(50% - var(--u) * 507);
+  width: calc(var(--u) * 1802.667); height: calc(var(--u) * 1014);
+  overflow: hidden; background: #fff; transform: scaleX(-1);
+}
+.vf-photo { position: absolute; left: calc(var(--u) * -22.535); top: calc(var(--u) * -65.722); width: calc(var(--u) * 1865.572); height: calc(var(--u) * 1079.722); overflow: hidden; }
+.vf-photo img { position: absolute; left: -0.04%; top: -0.08%; width: 103.27%; height: 100%; max-width: none; }
+.vf-scan { position: absolute; left: calc(var(--u) * 901.332); top: calc(var(--u) * -65.722); width: calc(var(--u) * 983.956); height: calc(var(--u) * 1079.722); }
+.pointcloud { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.play {
+  position: absolute; left: 50%; top: 50%; width: calc(var(--u) * 117.004); height: calc(var(--u) * 117.004);
+  transform: translate(-50%, -50%); padding: 0; border: 0; background: none; cursor: pointer; z-index: 2;
+  transition: transform .3s cubic-bezier(.2,.8,.2,1);
+}
+.play img { width: 100%; height: 100%; }
+.play:hover { transform: translate(-50%, -50%) scale(1.06); }
+
+/* ── Shared pinned panel ──────────────── */
+.panel { position: relative; height: 100vh; overflow: hidden; }
+.copy-block { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 108); width: calc(var(--u) * 427); z-index: 2; }
+.copy-block .body { margin-top: calc(var(--u) * 10); }
+
+/* ── Smartbadge ───────────────────────── */
+.badge { background: #cfc8bd; }
+.badge-media {
+  position: absolute; left: 0; top: 0; width: calc(var(--u) * 1954); height: calc(var(--u) * 1562);
+  transform-origin: 0 0; transform: translate(calc(var(--u) * -240), calc(var(--u) * -356)); will-change: transform;
+}
+.badge-media img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.text-scrim {
+  /* Frosted patch behind the top-left copy only; the rest of the photo stays sharp. */
+  position: absolute; left: 0; top: 0; width: calc(var(--u) * 900); height: calc(var(--u) * 540); z-index: 1;
+  -webkit-backdrop-filter: blur(calc(var(--u) * 22)); backdrop-filter: blur(calc(var(--u) * 22));
+  background: rgba(16, 16, 20, 0.22); /* light tint so white type holds contrast on pale photos */
+  -webkit-mask-image: radial-gradient(ellipse 100% 100% at 0% 0%, #000 55%, transparent 88%);
+  mask-image: radial-gradient(ellipse 100% 100% at 0% 0%, #000 55%, transparent 88%);
+  opacity: 0; visibility: hidden; pointer-events: none;
+}
+.badge-title { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 108); width: calc(var(--u) * 427); z-index: 2; }
+.badge-para { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 214); width: calc(var(--u) * 427); z-index: 2; }
+
+/* ── Spatialview ──────────────────────── */
+.spatial { background: #2a2420; }
+.spatial-bg {
+  position: absolute; left: 50%; top: 50%;
+  width: calc(var(--u) * 1526); height: max(calc(var(--u) * 856), calc(100vh + var(--u) * 46));
+  transform: translate(-50%, -50%); will-change: filter;
+}
+.spatial-bg img { width: 100%; height: 100%; object-fit: cover; }
+.screen {
+  position: absolute; left: 50%; top: calc(var(--u) * 304);
+  width: calc(var(--u) * 874); height: calc(var(--u) * 491); margin-left: calc(var(--u) * -437);
+  border-radius: calc(var(--u) * 30); overflow: hidden; background: #fff;
+  transform-origin: 50% 0; transform: translateY(100vh); will-change: transform; z-index: 2;
+}
+.screen-scan { position: absolute; inset: 0; transform: scaleX(-1); }
+.pie {
+  position: absolute; left: calc(var(--u) * 30.13);
+  width: calc(var(--u) * 137.658); height: calc(var(--u) * 137.658);
+  background: #fff; border-radius: calc(var(--u) * 18.354);
+}
+.pie-chart { position: absolute; left: calc(var(--u) * 9.177); top: calc(var(--u) * 9.177); width: calc(var(--u) * 119.303); height: calc(var(--u) * 119.303); }
+.pie-chart img { position: absolute; left: -15.38%; top: -15.38%; width: 130.76%; height: 130.76%; max-width: none; }
+.pie-label { position: absolute; left: calc(var(--u) * 9.177); top: calc(var(--u) * 9.177); font-size: calc(var(--u) * 11.013); line-height: 1.2; color: #000; white-space: nowrap; }
+
+/* ── Easy To Scale ────────────────────── */
+.scale { background: #140e0a; }
+.scale-bg { position: absolute; left: 50%; top: calc(var(--u) * -294); width: calc(var(--u) * 1470); height: calc(var(--u) * 1418); transform: translateX(-50%); }
+.scale-bg img { position: absolute; left: 0; top: 0.02%; width: 100%; height: 99.96%; }
+.pin { position: absolute; width: calc(var(--u) * 104); height: calc(var(--u) * 103); z-index: 2; }
+.pin-line { position: absolute; left: 0; top: 0; width: 1px; height: 100%; background: linear-gradient(#fff, rgba(255,255,255,0)); transform-origin: 50% 100%; }
+.pin-track { position: absolute; left: calc(var(--u) * 4); top: 0; width: calc(var(--u) * 100); height: calc(var(--u) * 25); background: var(--violet-soft); transform-origin: 0 50%; }
+.pin-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--violet); }
+.pin-label {
+  position: absolute; left: 0; bottom: calc(100% + var(--u) * 4); /* sits just above the bar, aligned with the line */
+  font-size: calc(var(--u) * 11); line-height: 1; letter-spacing: 0.02em; text-transform: uppercase; color: #fff; white-space: nowrap;
+}
+
+/* ── Retail / Brand ───────────────────── */
+.retail { position: relative; height: calc(var(--u) * 494); background: var(--ink); overflow: hidden; z-index: 3; }
+.toggle-row { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 60); display: flex; align-items: center; height: calc(var(--u) * 20); }
+.toggle-row > button { border: 0; background: none; padding: 0; cursor: pointer; font-size: calc(var(--u) * 16); line-height: 1.25; color: rgba(255,255,255,.2); transition: color .3s; }
+.toggle-row > button.on { color: #fff; }
+.toggle-row > button:first-child { margin-right: calc(var(--u) * 20); }
+.toggle-row > button:last-child { margin-left: calc(var(--u) * 10); }
+.switch { position: relative; width: calc(var(--u) * 20); height: calc(var(--u) * 10); }
+.switch-track { position: absolute; inset: 0; background: rgba(255,255,255,.2); }
+.switch-knob { position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: var(--violet); transition: transform .35s cubic-bezier(.6,0,.2,1); }
+.switch--brand .switch-knob { transform: translateX(100%); }
+/* 640 rather than Figma's 538: at regular weight the title needs ~585 to stay on one line (list starts at 730). */
+.rb-title { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 100); width: calc(var(--u) * 640); }
+.rb-para { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 168); width: calc(var(--u) * 427); }
+.rb-list { position: absolute; left: calc(var(--u) * 730); top: calc(var(--u) * 100); width: calc(var(--u) * 650); list-style: none; }
+.rb-list li { display: flex; flex-direction: column; gap: calc(var(--u) * 4); margin-bottom: calc(var(--u) * 20); }
+.rb-rule { display: block; height: 1px; background: #fff; }
+.rb-mask { display: block; overflow: hidden; }
+.rb-text { display: block; font-weight: 500; font-size: calc(var(--u) * 24); line-height: 1.25; text-transform: capitalize; }
+
+/* ── Principles ───────────────────────── */
+.principle { position: relative; height: max(100vh, calc(var(--u) * 800)); overflow: hidden; z-index: 3; }
+.principle--one { background: var(--ink-2); }
+.principle--two { background: var(--ink); }
+.pr-title { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 108); width: calc(var(--u) * 560); }
+.pr-para { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 176); width: calc(var(--u) * 427); }
+.pr-media { position: absolute; top: 50%; width: calc(var(--u) * 650); height: calc(var(--u) * 680); transform: translateY(-50%); overflow: hidden; }
+.principle--one .pr-media { left: calc(var(--u) * 720); background: #fff; }
+.principle--two .pr-media { left: calc(var(--u) * 730); }
+.aw-photo { position: absolute; left: calc(var(--u) * -344); top: calc(var(--u) * -35.07); width: calc(var(--u) * 890.17); height: calc(var(--u) * 750); overflow: hidden; }
+.aw-photo img { position: absolute; left: -0.06%; top: -0.08%; width: 150.33%; height: 100%; max-width: none; }
+.aw-scan { position: absolute; inset: 0; }
+.pv-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.pv-scan { position: absolute; left: calc(var(--u) * 20); bottom: calc(var(--u) * 20); width: calc(var(--u) * 531); height: calc(var(--u) * 346); }
+
+/* ── Testimonials + footer ────────────── */
+/* Band pins at the top under the fixed logo, so its content starts at 108 like the other sections;
+   band (448) + footer (352) still fill one 800 screen. */
+.outro { position: relative; display: flex; flex-direction: column; min-height: max(100vh, calc(var(--u) * 800)); z-index: 3; }
+.testimonials { position: relative; flex: none; height: calc(var(--u) * 448); background: var(--violet); overflow: hidden; }
+.t-title { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 108); width: calc(var(--u) * 538); }
+.quotes { position: absolute; left: calc(var(--u) * 730); top: calc(var(--u) * 108); width: calc(var(--u) * 650); height: calc(var(--u) * 210); }
+.quote { position: absolute; inset: 0; }
+.quote blockquote { font-weight: 500; font-size: calc(var(--u) * 24); line-height: 1.25; }
+.quote figcaption { margin-top: calc(var(--u) * 20); font-size: calc(var(--u) * 16); line-height: 1.25; white-space: nowrap; } /* follows the quote at a fixed 20px gap */
+.dots { position: absolute; left: calc(var(--u) * 730); top: calc(var(--u) * 378); display: flex; gap: calc(var(--u) * 10); }
+.dots button { width: calc(var(--u) * 10); height: calc(var(--u) * 10); padding: 0; border: 0; background: rgba(255,255,255,.2); cursor: pointer; transition: background .3s; }
+.dots button.on { background: #fff; }
+
+.footer { position: relative; flex: 1 0 auto; min-height: calc(var(--u) * 352); background: #000; }
+.footer .h-display { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 60); width: calc(var(--u) * 538); }
+.signup { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 186); width: calc(var(--u) * 315); height: calc(var(--u) * 28); display: flex; align-items: center; border-bottom: 1px solid #fff; }
+.signup input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: none; color: #fff; font: 400 calc(var(--u) * 16) / 1.25 var(--f-text); }
+.signup input::placeholder { color: #808080; }
+.signup button { width: calc(var(--u) * 24); height: calc(var(--u) * 24); padding: 0; border: 0; background: none; cursor: pointer; }
+.signup button img { width: 100%; height: 100%; transition: transform .25s; }
+.signup button:hover img { transform: translateX(3px); }
+.signup-thanks { font-size: calc(var(--u) * 16); color: #fff; }
+.legal { position: absolute; left: calc(var(--u) * 60); right: calc(var(--u) * 60); bottom: calc(var(--u) * 60); display: flex; justify-content: space-between; font-size: calc(var(--u) * 16); line-height: 1.25; color: rgba(255,255,255,.25); }
+.legal-links { display: flex; gap: calc(var(--u) * 20); }
+.legal a:hover { color: rgba(255,255,255,.6); }
+
+/* ── Video placeholder overlay ────────── */
+.video-overlay { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: rgba(12, 12, 14, 0.92); }
+.video-overlay-box { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 48px 56px; text-align: center; }
+.video-overlay-box img { width: 72px; height: 72px; opacity: .9; }
+.video-overlay-box p { font-family: var(--f-display); font-weight: 400; font-size: 32px; }
+.video-overlay-box span { color: rgba(255,255,255,.55); font-size: 15px; }
+.video-overlay-box button { margin-top: 16px; padding: 10px 22px; border: 0; background: rgba(189,189,189,.5); text-transform: uppercase; font-weight: 500; font-size: 13px; cursor: pointer; }
+
+/* ── Mobile: same order, stacked layout, lighter motion ── */
+@media (max-width: 767px) {
+  .h-display, .hero-title { font-size: 34px; }
+  .body, .hero-sub { font-size: 15px; }
+  .nav { display: none; }
+  .logo { left: 20px; top: 20px; width: 220px; height: 34px; }
+  .logo-icon { top: 4px; width: 66px; height: 30px; }
+  .logo-word { left: 70px; font-size: 35px; }
+
+  .intro { height: auto; }
+  .hero-copy { position: relative; padding: 130px 20px 40px; }
+  .hero-title, .hero-sub, .hero-btn { position: static; width: auto; }
+  .hero-sub { margin: 16px 0 24px; max-width: 300px; }
+  .hero-btn { display: inline-block; font-size: 13px; padding: 11px 22px; line-height: 17px; }
+  .video { position: relative; height: 62vh; transform: none; clip-path: none; }
+  .video-frame { --u: max(calc(100vw / 1440), calc(62vh / 810)); }
+  .play { width: 84px; height: 84px; }
+
+  .copy-block, .badge-title, .badge-para { left: 20px; width: calc(100% - 40px); top: 96px; }
+  .copy-block .body { margin-top: 12px; }
+  .badge-para { top: 180px; }
+  .badge-media { inset: 0; width: 100%; height: 100%; transform: none !important; }
+  .badge-media img { object-fit: cover; object-position: 66% 55%; }
+  .text-scrim { display: none; }
+
+  .spatial-bg { width: 100%; height: 100%; left: 0; top: 0; transform: none; }
+  .screen { --u: calc((100vw - 40px) / 874); top: auto; bottom: 60px; transform: none; }
+
+  .scale-bg { --u: calc(100vh / 1000); top: 0; height: 100%; width: calc(100vh * 1470 / 1000); }
+  .pin { --u: 0.6px; left: calc(var(--px) * 0.8%) !important; top: calc(30% + var(--py) * 0.62%) !important; }
+  .pin-label { font-size: 8px; bottom: calc(100% + 3px); }
+
+  .retail { height: auto; padding: 60px 20px; }
+  .toggle-row, .rb-title, .rb-para, .rb-list { position: static; width: auto; }
+  .toggle-row { --u: 1px; margin-bottom: 24px; }
+  .rb-para { margin: 12px 0 36px; }
+  .rb-list li { margin-bottom: 14px; }
+  .rb-text { font-size: 20px; }
+
+  .principle { height: auto; padding: 96px 20px 60px; }
+  .pr-title, .pr-para { position: static; width: auto; }
+  .pr-para { margin-top: 12px; }
+  .pr-media { --u: calc((100vw - 40px) / 650); position: relative; left: 0 !important; top: 0; transform: none; margin-top: 32px; }
+
+  .outro { min-height: 0; }
+  .testimonials { height: auto; padding: 60px 20px; }
+  .t-title, .quotes, .dots { position: relative; left: 0; top: 0; width: auto; }
+  .quotes { height: 280px; margin-top: 32px; }
+  .quote blockquote { font-size: 19px; }
+  .quote figcaption { position: static; margin-top: 20px; font-size: 14px; white-space: normal; }
+  .dots { --u: 1px; }
+  .footer { min-height: 0; padding: 60px 20px; }
+  .footer .h-display, .signup, .legal { position: static; width: auto; }
+  .signup { --u: 1px; width: 100%; max-width: 320px; margin: 32px 0 80px; }
+  .legal { --u: 1px; flex-direction: column; gap: 12px; font-size: 14px; }
+}

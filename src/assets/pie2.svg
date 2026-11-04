@@ -1,0 +1,13 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="156.012" height="156.012" viewBox="0 0 156.012 156.012" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 2147233697" filter="url(#filter0_f_0_7)">
+<rect id="Rectangle 2147237531" x="18.3544" y="18.3544" width="119.303" height="119.303" rx="59.6516" fill="#DBDBFF"/>
+<path id="Ellipse 4" d="M137.658 78.006C137.658 89.804 134.159 101.337 127.605 111.147C121.05 120.956 111.734 128.602 100.834 133.117C89.9338 137.632 77.9398 138.813 66.3685 136.511C54.7973 134.21 44.1684 128.529 35.8259 120.186L78.006 78.006H137.658Z" fill="#594BFF"/>
+</g>
+<defs>
+<filter id="filter0_f_0_7" x="0" y="0" width="156.012" height="156.012" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="0" result="effect1_foregroundBlur_0_7"/>
+</filter>
+</defs>
+</svg>
