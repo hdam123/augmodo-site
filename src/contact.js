@@ -44,7 +44,7 @@ export function ContactOverlay({ open, onClose }) {
   return html`
     <div className="contact" ref=${ref} role="dialog" aria-modal="true" aria-labelledby="contact-title">
       <div className="contact-main">
-        <img className="contact-logo" src=${A('logo-icon-large.svg')} alt="Augmodo" />
+        <img className="contact-logo" src=${A('logo-full.svg')} alt="Augmodo" />
         <p className="contact-label">Contact Us</p>
         <h2 className="h-display contact-title" id="contact-title">The future of work is augmented.<br />Let’s start with yours.</h2>
         ${sent

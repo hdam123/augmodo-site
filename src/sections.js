@@ -42,8 +42,9 @@ export function Header({ page = 'home', onContact }) {
   return html`
     <header className=${`site-header site-header--${page}${menu ? ' menu-open' : ''}`} onClick=${(e) => e.target.closest('.nav a') && setMenu(false)}>
       <a className="logo" href="#/" aria-label="Augmodo home">
-        <img className="logo-icon logo-icon--purple" src=${A('logo-icon-large.svg')} alt="" />
-        <img className="logo-icon logo-icon--white" src=${A('logo-icon-small.svg')} alt="" />
+        <img className="logo-icon logo-icon--purple" src=${A('logo-mark.svg')} alt="" />
+        <img className="logo-icon logo-icon--white" src=${A('logo-mark-white.svg')} alt="" />
+        <img className="logo-word" src=${A('logo-word.svg')} alt="" />
       </a>
       <nav className="nav">
         ${NAV[page].map(([label, href]) => (href
@@ -66,7 +67,13 @@ export function Intro({ onPlay, onContact }) {
     const logo = {
       purple: document.querySelector('.logo-icon--purple'),
       white: document.querySelector('.logo-icon--white'),
+      word: document.querySelector('.logo-word'),
     };
+    // The wordmark fades out over the first stretch of scrolling, leaving just the mark.
+    gsap.to(logo.word, {
+      autoAlpha: 0, x: () => -12 * u(), ease: 'none',
+      scrollTrigger: { start: 0, end: () => 160 * u(), scrub: 0.4, invalidateOnRefresh: true },
+    });
 
     mm.add(DESKTOP, () => {
       const tl = gsap.timeline({

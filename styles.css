@@ -67,10 +67,12 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
 /* Careers scrolls its header away with the page; the homepage keeps it fixed and swaps the large
    purple mark for the small white one once the video covers the hero (Intro timeline). */
 .site-header--careers { position: absolute; }
-.logo { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 32); width: calc(var(--u) * 203); height: calc(var(--u) * 96.867); }
-.logo-icon { position: absolute; left: 0; }
-.logo-icon--purple { top: calc(var(--u) * 2.76); width: calc(var(--u) * 203); height: calc(var(--u) * 91.342); }
-.logo-icon--white { top: 0; width: calc(var(--u) * 93.607); height: calc(var(--u) * 42.119); opacity: 0; visibility: hidden; }
+/* Figma logo 286:261 (3241 × 461) at 47 tall: mark 0–1078, wordmark from 1179. */
+.logo { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 32); width: calc(var(--u) * 330.4); height: calc(var(--u) * 47); }
+.logo-icon, .logo-word { position: absolute; top: 0; height: 100%; }
+.logo-icon { left: 0; width: calc(var(--u) * 109.9); }
+.logo-word { left: calc(var(--u) * 120.2); width: calc(var(--u) * 210.2); }
+.logo-icon--white { opacity: 0; visibility: hidden; }
 .nav { position: absolute; top: calc(var(--u) * 32); right: calc(var(--u) * 60); display: flex; gap: calc(var(--u) * 20); }
 .nav a { font-size: calc(var(--u) * 14); line-height: 1.1; white-space: nowrap; transition: color .2s, opacity .2s; }
 .nav a:hover { color: #c3c4ff; opacity: 1; }
@@ -268,8 +270,8 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
 /* ── Book a demo: full-screen contact form ── */
 .contact { position: fixed; inset: 0; z-index: 100; background: var(--ink); overflow: auto; }
 .contact-main { position: relative; min-height: 100%; width: calc(var(--u) * 842); padding: calc(var(--u) * 32) 0 calc(var(--u) * 60) calc(var(--u) * 60); }
-.contact-logo { width: calc(var(--u) * 203); height: calc(var(--u) * 91.342); margin-top: calc(var(--u) * 2.76); }
-.contact-label { margin-top: calc(var(--u) * 75); font-size: calc(var(--u) * 16); line-height: 1.25; text-transform: uppercase; }
+.contact-logo { width: calc(var(--u) * 330.4); height: calc(var(--u) * 47); }
+.contact-label { margin-top: calc(var(--u) * 123); font-size: calc(var(--u) * 16); line-height: 1.25; text-transform: uppercase; }
 .contact-title { width: calc(var(--u) * 782); margin-top: calc(var(--u) * 20); }
 .contact-form { display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--u) * 40); margin-top: calc(var(--u) * 40); }
 .contact-fields { display: flex; align-items: flex-end; gap: calc(var(--u) * 20); }
@@ -317,9 +319,7 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
   }
   .site-header--careers .menu-btn { position: absolute; }
   .menu-open .logo { z-index: 1; }
-  .logo { left: 20px; top: 20px; width: 110px; height: 50px; }
-  .logo-icon--purple { top: 0; width: 110px; height: 49.5px; }
-  .logo-icon--white { width: 66px; height: 30px; }
+  .logo { --u: 0.7234px; left: 20px; top: 24px; } /* 34px tall */
   .btn { font-size: 13px; padding: 11px 22px; line-height: 17px; }
 
   .intro { height: auto; }
@@ -384,7 +384,7 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
 
   .contact { --u: 1px; }
   .contact-main { width: auto; padding: 20px 20px 60px; }
-  .contact-logo { width: 110px; height: 49.5px; }
+  .contact-logo { width: 239px; height: 34px; }
   .contact-label { margin-top: 60px; }
   .contact-title { width: auto; font-size: 34px; }
   .contact-fields { flex-direction: column; align-items: stretch; width: 100%; gap: 28px; }
