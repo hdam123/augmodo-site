@@ -2,13 +2,13 @@ import React, { useLayoutEffect, useEffect, useRef, useState } from 'react';
 import { html, gsap, ScrollTrigger, splitLines, LINE_IN, u, U, MOBILE_BP } from './lib.js';
 import { PointCloud, SCAN_PARAMS, PRIVACY_PARAMS } from './pointcloud.js';
 
-const A = (f) => new URL(`./assets/${f}`, import.meta.url).href;
+export const A = (f) => new URL(`./assets/${f}`, import.meta.url).href;
 const DESKTOP = `(min-width: ${MOBILE_BP}px)`;
 const MOBILE = `(max-width: ${MOBILE_BP - 1}px)`;
 const vh = () => window.innerHeight;
 
 // Runs `build` inside a gsap.context + matchMedia scoped to `ref`, cleaned up on unmount.
-function useScene(ref, build) {
+export function useScene(ref, build) {
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(ref);
@@ -21,7 +21,7 @@ function useScene(ref, build) {
 }
 
 // Simple scroll-in reveal used on mobile and for non-pinned blocks.
-function revealOnEnter(trigger, targets, start = 'top 80%') {
+export function revealOnEnter(trigger, targets, start = 'top 80%') {
   return gsap.from(targets, {
     ...LINE_IN, duration: 0.9,
     scrollTrigger: { trigger, start, toggleActions: 'play none none reverse' },
@@ -30,23 +30,33 @@ function revealOnEnter(trigger, targets, start = 'top 80%') {
 
 /* ───────────────────────── Header ───────────────────────── */
 
-export function Header() {
+// Our Story, FAQ and News aren't designed yet, so they lead back to the homepage.
+const NAV = {
+  home: [['Our Story', '#/'], ['Careers', '#/careers'], ['News', '#/'], ['Contact Us', null]],
+  careers: [['Our Story', '#/'], ['Careers', '#/careers'], ['FAQ', '#/'], ['News', '#/'], ['Contact Us', null]],
+};
+
+export function Header({ page = 'home', onContact }) {
+  // Phones get a Menu button that opens the same links as a panel.
+  const [menu, setMenu] = useState(false);
   return html`
-    <header className="site-header">
-      <a className="logo" href="#top" aria-label="Augmodo home">
-        <img className="logo-icon logo-icon--purple" src=${A('logo-icon-wordmark.svg')} alt="" />
+    <header className=${`site-header site-header--${page}${menu ? ' menu-open' : ''}`} onClick=${(e) => e.target.closest('.nav a') && setMenu(false)}>
+      <a className="logo" href="#/" aria-label="Augmodo home">
+        <img className="logo-icon logo-icon--purple" src=${A('logo-icon-large.svg')} alt="" />
         <img className="logo-icon logo-icon--white" src=${A('logo-icon-small.svg')} alt="" />
-        <span className="logo-word">Augmodo</span>
       </a>
       <nav className="nav">
-        <a href="#top">Our Story</a><a href="#top">Careers</a><a href="#top">News</a><a href="#footer">Contact Us</a>
+        ${NAV[page].map(([label, href]) => (href
+          ? html`<a key=${label} href=${href} className=${label.toLowerCase() === page ? 'on' : ''}>${label}</a>`
+          : html`<a key=${label} href="#/" onClick=${onContact}>${label}</a>`))}
       </nav>
+      <button className="menu-btn" aria-expanded=${menu} onClick=${() => setMenu(!menu)}>${menu ? 'Close' : 'Menu'}</button>
     </header>`;
 }
 
 /* ─────────────── 1–3 · Hero → video takes over ─────────────── */
 
-export function Intro({ onPlay }) {
+export function Intro({ onPlay, onContact }) {
   const ref = useRef(null);
   useScene(ref, ({ q, one, mm }) => {
     const lines = [...splitLines(one('.hero-title')), ...splitLines(one('.hero-sub'))];
@@ -56,7 +66,6 @@ export function Intro({ onPlay }) {
     const logo = {
       purple: document.querySelector('.logo-icon--purple'),
       white: document.querySelector('.logo-icon--white'),
-      word: document.querySelector('.logo-word'),
     };
 
     mm.add(DESKTOP, () => {
@@ -72,7 +81,6 @@ export function Intro({ onPlay }) {
           { clipPath: () => `inset(0px ${60 * u()}px 0px ${60 * u()}px)` },
           { clipPath: 'inset(0px 0px 0px 0px)', ease: 'power1.inOut', duration: 1 }, 0)
         .to(one('.hero-copy'), { autoAlpha: 0, ease: 'none', duration: 0.55 }, 0.05)
-        .to(logo.word, { autoAlpha: 0, x: -12, duration: 0.25 }, 0.7)
         .to(logo.purple, { autoAlpha: 0, duration: 0.25 }, 0.7)
         .to(logo.white, { autoAlpha: 1, duration: 0.25 }, 0.7)
         .to({}, { duration: 0.3 });
@@ -80,8 +88,8 @@ export function Intro({ onPlay }) {
     mm.add(MOBILE, () => {
       ScrollTrigger.create({
         trigger: one('.video'), start: 'top 30%',
-        onEnter: () => gsap.to([logo.word, logo.purple], { autoAlpha: 0, duration: 0.3 }) && gsap.to(logo.white, { autoAlpha: 1 }),
-        onLeaveBack: () => gsap.to([logo.word, logo.purple], { autoAlpha: 1, duration: 0.3 }) && gsap.to(logo.white, { autoAlpha: 0 }),
+        onEnter: () => gsap.to(logo.purple, { autoAlpha: 0, duration: 0.3 }) && gsap.to(logo.white, { autoAlpha: 1 }),
+        onLeaveBack: () => gsap.to(logo.purple, { autoAlpha: 1, duration: 0.3 }) && gsap.to(logo.white, { autoAlpha: 0 }),
       });
     });
   });
@@ -89,17 +97,12 @@ export function Intro({ onPlay }) {
   return html`
     <section className="intro" id="top" ref=${ref}>
       <div className="hero-copy">
-        <h1 className="hero-title">Augment your retail<br />workforce</h1>
-        <p className="hero-sub">Track every product in every store in real-time with Augmodo Spatial AI</p>
-        <a className="hero-btn" href="#footer">Book a demo</a>
+        <h1 className="hero-title">Augment your workforce</h1>
+        <p className="hero-sub">Wearable AI assistants for the physical workforce</p>
+        <button className="btn hero-btn" onClick=${onContact}>Book a demo</button>
       </div>
       <div className="video">
-        <div className="video-frame" role="img" aria-label="Grocery produce aisle, half shown as an Augmodo spatial scan">
-          <div className="vf-photo"><img src=${A('store.jpg')} alt="" /></div>
-          <div className="vf-scan">
-            <${PointCloud} src=${A('store.jpg')} box=${[983.956, 1079.722]} imgRect=${[-943.02, -0.86, 1926.59, 1079.722]} params=${SCAN_PARAMS} />
-          </div>
-        </div>
+        <img className="video-thumb" src=${A('video-thumb-lanyard.jpg')} alt="Store associate putting on the Augmodo Smartbadge" />
         <button className="play" onClick=${onPlay} aria-label="Play video">
           <img src=${A('play.svg')} alt="" />
         </button>
@@ -159,8 +162,8 @@ export function Smartbadge() {
         <img src=${A('badge.jpg')} alt="Store associate wearing the Augmodo Smartbadge" />
       </div>
       <div className="text-scrim" aria-hidden="true" />
-      <h2 className="h-display badge-title">100% Passive<br />Smartbadge</h2>
-      <p className="body badge-para">Empower your greatest asset, your people, with no operational changes, while being 100x cheaper hardware than competing solutions.</p>
+      <h2 className="h-display badge-title">100% Passive<br />Smartbadge™</h2>
+      <p className="body badge-para">Empower your greatest asset, your people, with no operational changes, at 100x the cost effectiveness of competing hardware solutions.</p>
     </section>`;
 }
 
@@ -194,8 +197,8 @@ export function Spatialview() {
         .fromTo(one('.spatial-bg'), { filter: 'blur(0px)' }, { filter: () => `blur(${12 * u()}px)`, duration: 1.1, ease: 'none' }, 0.8)
         .to(one('.text-scrim'), { autoAlpha: 1, duration: 1.1, ease: 'none' }, 0.8)
         .fromTo(screen, { y: () => vh() - 304 * u(), scale: 1 }, { y: () => 67 * u(), scale: 1, duration: 1.1, ease: 'power2.out' }, 0.8)
-        // frame 10: settles smaller and centred (655.5 × 368 at top 304)
-        .to(screen, { y: 0, scale: 655.5 / 874, duration: 0.9 }, 2.0)
+        // frame 10: settles smaller and centred (655.5 × 368), below the three-line title
+        .to(screen, { y: () => 76 * u(), scale: 655.5 / 874, duration: 0.9 }, 2.0)
         .from(q('.pie'), { scale: 0, autoAlpha: 0, duration: 0.45, stagger: 0.18, ease: 'back.out(2)' }, 2.75)
         .to({}, { duration: 0.4 });
     });
@@ -211,8 +214,8 @@ export function Spatialview() {
       <div className="spatial-bg"><img src=${A('store.jpg')} alt="" /></div>
       <div className="text-scrim" aria-hidden="true" />
       <div className="copy-block">
-        <h2 className="h-display sv-title">Real-time<br />Spatialview™</h2>
-        <p className="body sv-para">Pour your morning coffee, open your laptop, and check any store’s conditions in real time. With store level Realograms™ you can find and fix problems when they happen, not when sales dip.</p>
+        <h2 className="h-display sv-title">Real-time<br />Spatialview™ of Every Site</h2>
+        <p className="body sv-para">Pour your morning coffee, open your laptop, and check any site’s conditions in real time. With store level Realograms™ you can find and fix problems when they happen, not when sales dip.</p>
       </div>
       <div className="screen">
         <div className="screen-scan">
@@ -269,7 +272,7 @@ export function EasyToScale() {
       <div className="scale-bg"><img src=${A('city.jpg')} alt="City skyline" /></div>
       <div className="copy-block">
         <h2 className="h-display ets-title">Easy To Scale</h2>
-        <p className="body ets-para">Low capex, 100% passive for associates, ${'<30'} minutes to set up new stores, and built in redundancy.</p>
+        <p className="body ets-para">Low capex, 100% passive for associates, and less than 20 minutes to set up a new site with coverage that compounds.</p>
       </div>
       ${PINS.map((p, i) => html`
         <div className="pin" key=${i} style=${{ left: U(p.x), top: U(p.y), '--px': p.x / 14.4, '--py': p.y / 8.1 }}>
@@ -329,7 +332,7 @@ export function RetailBrand() {
         <button className=${`switch switch--${mode}`} aria-label="Switch audience" onClick=${toggle(mode === 'retail' ? 'brand' : 'retail')}>
           <span className="switch-track" /><span className="switch-knob" />
         </button>
-        <button role="tab" aria-selected=${mode === 'brand'} className=${mode === 'brand' ? 'on' : ''} onClick=${toggle('brand')}>BRAND</button>
+        <button role="tab" aria-selected=${mode === 'brand'} className=${mode === 'brand' ? 'on' : ''} onClick=${toggle('brand')}>BRANDS</button>
       </div>
       <h2 className="h-display rb-title">Real-time Data and Trends</h2>
       <p className="body rb-para">Empower your greatest asset, your people, with no operational changes, while being 100x cheaper hardware than competing solutions.</p>
@@ -376,8 +379,8 @@ export function AugmentedWorkforce() {
 
   return html`
     <section className="principle principle--one" ref=${ref}>
-      <h2 className="h-display pr-title">Augmented Workforce™</h2>
-      <p className="body pr-para">Technology should enhance, not replace, your workforce. Reduce tedious audits, simplify ecommerce picking, provide security, and enhance the value of associate’s roles with a passive Smartbadge.</p>
+      <h2 className="h-display pr-title">Enable, Not Replace</h2>
+      <p className="body pr-para">Technology that makes your team more capable. Fewer tedious audits, faster ecommerce picking, safer shifts and more valuable roles, all with a passive Smartbadge.</p>
       <div className="pr-media">
         <div className="aw-photo"><img src=${A('store.jpg')} alt="Grocery produce aisle" /></div>
         <div className="pr-reveal aw-scan">
@@ -396,7 +399,7 @@ export function Privacy() {
   return html`
     <section className="principle principle--two" ref=${ref}>
       <h2 className="h-display pr-title">World Leading Privacy</h2>
-      <p className="body pr-para">Augmodo’s core value is to enable people, not track them. We run state of the art privacy filtering on premise to ensure that only shelf data is processed. We do not track customers.</p>
+      <p className="body pr-para">Augmodo sees the work, not the worker. We run state-of-the-art privacy filtering on premise, so only shelf data is processed. People in a frame are blurred in the store before any data leaves it, over 99% of frames are discarded within minutes, and we do not track customers.</p>
       <div className="pr-media">
         <img className="pv-photo" src=${A('privacy.jpg')} alt="Busy supermarket from above" />
         <div className="pr-reveal pv-scan">
@@ -406,90 +409,70 @@ export function Privacy() {
     </section>`;
 }
 
-/* ─────────────── 21–22 · Testimonials + footer ─────────────── */
+/* ─────────────── 21–22 · Testimonials ─────────────── */
 
-const QUOTES = [
-  {
-    text: '“Augmodo was quick to set up and impressive in the speed to value. Within days I had deep data resulting in both micro and macro insights. Within a month our on-shelf availability improved by 30% and it continues to improve!”',
-    who: 'Head of Operations, Drug Retailer',
-  },
-  {
-    text: '“Our field reps used to find out about planogram issues weeks late. Now we see every shelf in real time and fix problems the same day they happen.”',
-    who: 'Placeholder quote · VP Retail Execution, CPG Brand',
-  },
-  {
-    text: '“Setup took less than thirty minutes per store and our associates didn’t change a thing about how they work. The data just started flowing.”',
-    who: 'Placeholder quote · Director of Store Operations, Grocery Chain',
-  },
-];
-
-export function Outro() {
+export function Testimonials() {
   const ref = useRef(null);
-  const stRef = useRef(null);
-  const [active, setActive] = useState(0);
-  const [sent, setSent] = useState(false);
-
-  useScene(ref, ({ q, one, mm }) => {
-    const quotes = q('.quote');
-    gsap.set(quotes.slice(1), { autoAlpha: 0, y: 30 });
-    revealOnEnter(one('.testimonials'), splitLines(one('.t-title')), 'top 80%');
-
-    const build = (pinned) => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: pinned ? ref.current : one('.testimonials'),
-          start: pinned ? 'bottom bottom' : 'top 40%',
-          end: () => `+=${vh() * (pinned ? 2 : 1.2)}`,
-          pin: pinned, scrub: 1, invalidateOnRefresh: true,
-          onUpdate: (self) => setActive(Math.min(2, Math.floor(self.progress * 2.999))),
-        },
-      });
-      stRef.current = tl.scrollTrigger;
-      quotes.slice(1).forEach((qEl, i) => {
-        tl.to(quotes[i], { autoAlpha: 0, y: -30, duration: 0.4, ease: 'power2.in' }, i + 0.6)
-          .to(qEl, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' }, i + 0.85);
-      });
-      tl.to({}, { duration: 0.6 });
-    };
-    mm.add(DESKTOP, () => build(true));
-    mm.add(MOBILE, () => build(false));
+  useScene(ref, ({ one }) => {
+    const tl = gsap.timeline({ scrollTrigger: { trigger: ref.current, start: 'top 75%', toggleActions: 'play none none reverse' } });
+    tl.from(splitLines(one('.t-title')), { ...LINE_IN, duration: 0.9 })
+      .from(splitLines(one('.quote blockquote')), { ...LINE_IN, duration: 0.9, stagger: 0.08 }, 0.15)
+      .from(one('.quote figcaption'), { autoAlpha: 0, y: 10, duration: 0.6, ease: 'power3.out' }, 0.6);
   });
 
-  const goTo = (i) => () => {
-    const st = stRef.current;
-    if (!st) return;
-    window.scrollTo({ top: st.start + (st.end - st.start) * ((i + 0.5) / 3), behavior: 'smooth' });
-  };
-
   return html`
-    <div className="outro" ref=${ref}>
-      <section className="testimonials">
-        <h2 className="h-display t-title">What our partners are<br />saying about us.</h2>
-        <div className="quotes">
-          ${QUOTES.map((qt, i) => html`
-            <figure className="quote" key=${i} aria-hidden=${active !== i}>
-              <blockquote>${qt.text}</blockquote>
-              <figcaption>${qt.who}</figcaption>
-            </figure>`)}
-        </div>
-        <div className="dots" role="tablist" aria-label="Testimonials">
-          ${QUOTES.map((_, i) => html`<button key=${i} className=${i === active ? 'on' : ''} aria-label=${`Testimonial ${i + 1}`} onClick=${goTo(i)} />`)}
-        </div>
-      </section>
-      <footer className="footer" id="footer">
-        <h2 className="h-display">Stay up to date with the<br />latest from Augmodo</h2>
-        <form className="signup" onSubmit=${(e) => { e.preventDefault(); setSent(true); }}>
-          ${sent
-            ? html`<p className="signup-thanks">Thanks, you’re on the list.</p>`
-            : html`<input type="email" required placeholder="EMAIL" aria-label="Email address" />
-                   <button type="submit" aria-label="Subscribe"><img src=${A('arrow.svg')} alt="" /></button>`}
-        </form>
-        <div className="legal">
-          <span>© 2026 Augmodo</span>
-          <span className="legal-links"><a href="#footer">Privacy Policy</a><a href="#footer">Terms Of Use</a></span>
-        </div>
-      </footer>
+    <section className="testimonials" ref=${ref}>
+      <h2 className="h-display t-title">What our partners are<br />saying about us.</h2>
+      <figure className="quote">
+        <blockquote>“Augmodo was quick to set up and impressive in the speed to value. Within days I had deep data resulting in both micro and macro insights. Within a month our on-shelf availability improved by 30% and it continues to improve!”</blockquote>
+        <figcaption>Head of Operations, Drug Retailer</figcaption>
+      </figure>
+    </section>`;
+}
+
+/* ─────────────── Closing CTA ─────────────── */
+
+// Last section of the homepage, so it also carries the legal row in place of a footer.
+export function Cta({ onContact }) {
+  const ref = useRef(null);
+  useScene(ref, ({ one }) => {
+    // Starts early: at the bottom of the page this section's top never rises past mid-screen.
+    const tl = gsap.timeline({ scrollTrigger: { trigger: ref.current, start: 'top 85%', toggleActions: 'play none none reverse' } });
+    tl.from(splitLines(one('.cta-title')), { ...LINE_IN, duration: 0.9 })
+      .from(one('.cta-btn'), { autoAlpha: 0, y: 16, duration: 0.8, ease: 'power3.out' }, 0.4);
+  });
+  return html`
+    <section className="cta" id="footer" ref=${ref}>
+      <h2 className="h-display cta-title">The future of work is augmented. Let’s start with yours.</h2>
+      <button className="btn cta-btn" onClick=${onContact}>Book a demo</button>
+      <${Legal} />
+    </section>`;
+}
+
+/* ─────────────── Footer (careers) and legal row ─────────────── */
+
+function Legal() {
+  return html`
+    <div className="legal">
+      <span>© 2026 Augmodo</span>
+      <span className="legal-links"><a href="#/">Privacy Policy</a><a href="#/">Terms Of Use</a></span>
     </div>`;
+}
+
+// Careers footer; the homepage ends on the CTA instead.
+export function Footer() {
+  const [sent, setSent] = useState(false);
+  return html`
+    <footer className="footer" id="footer">
+      <h2 className="h-display">Stay up to date with the<br />latest from Augmodo</h2>
+      <form className="signup" onSubmit=${(e) => { e.preventDefault(); setSent(true); }}>
+        ${sent
+          ? html`<p className="signup-thanks">Thanks, you’re on the list.</p>`
+          : html`<input type="email" required placeholder="EMAIL" aria-label="Email address" />
+                 <button type="submit" aria-label="Subscribe"><img src=${A('arrow.svg')} alt="" /></button>`}
+      </form>
+      <${Legal} />
+    </footer>`;
 }
 
 /* ─────────────── Video placeholder overlay ─────────────── */

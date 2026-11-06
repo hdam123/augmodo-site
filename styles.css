@@ -28,6 +28,18 @@ body {
 img { display: block; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; }
+html.no-scroll, html.no-scroll body { overflow: hidden; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Grey Figma button (Book a demo, Open Positions, Submit). */
+.btn {
+  display: inline-block; border: 0; cursor: pointer;
+  padding: calc(var(--u) * 11.303) calc(var(--u) * 22.606);
+  background: rgba(189, 189, 189, 0.5); color: #fff;
+  font-weight: 500; font-size: calc(var(--u) * 13.564); line-height: calc(var(--u) * 17);
+  text-transform: uppercase; transition: background .25s, color .25s;
+}
+.btn:hover { background: #c3c4ff; color: var(--ink); }
 h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
 
 .h-display {
@@ -52,31 +64,27 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
 /* ── Header ───────────────────────────── */
 .site-header { position: fixed; inset: 0 0 auto 0; height: 0; z-index: 50; pointer-events: none; }
 .site-header a { pointer-events: auto; }
-.logo { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 30); width: calc(var(--u) * 315); height: calc(var(--u) * 47); }
-.logo-icon { position: absolute; left: 0; top: calc(var(--u) * 5.034); width: calc(var(--u) * 93.607); height: calc(var(--u) * 42.119); }
-.logo-icon--white { opacity: 0; visibility: hidden; }
-.logo-word {
-  position: absolute; left: calc(var(--u) * 99.25); top: 0;
-  font-family: var(--f-text); font-weight: 500;
-  font-size: calc(var(--u) * 50.163); line-height: 0.9; letter-spacing: -0.01em; white-space: nowrap;
-}
-.nav { position: absolute; top: calc(var(--u) * 30); right: calc(var(--u) * 60); display: flex; gap: calc(var(--u) * 20); }
-.nav a { font-size: calc(var(--u) * 14); line-height: 1.1; white-space: nowrap; transition: color .2s; }
-.nav a:hover { color: #c3c4ff; }
+/* Careers scrolls its header away with the page; the homepage keeps it fixed and swaps the large
+   purple mark for the small white one once the video covers the hero (Intro timeline). */
+.site-header--careers { position: absolute; }
+.logo { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 32); width: calc(var(--u) * 203); height: calc(var(--u) * 96.867); }
+.logo-icon { position: absolute; left: 0; }
+.logo-icon--purple { top: calc(var(--u) * 2.76); width: calc(var(--u) * 203); height: calc(var(--u) * 91.342); }
+.logo-icon--white { top: 0; width: calc(var(--u) * 93.607); height: calc(var(--u) * 42.119); opacity: 0; visibility: hidden; }
+.nav { position: absolute; top: calc(var(--u) * 32); right: calc(var(--u) * 60); display: flex; gap: calc(var(--u) * 20); }
+.nav a { font-size: calc(var(--u) * 14); line-height: 1.1; white-space: nowrap; transition: color .2s, opacity .2s; }
+.nav a:hover { color: #c3c4ff; opacity: 1; }
+.site-header--careers .nav a { opacity: .6; }
+.site-header--careers .nav a.on { opacity: 1; }
+.menu-btn { display: none; }
 
 /* ── Intro: hero + video ──────────────── */
 .intro { position: relative; height: 100vh; background: var(--ink); overflow: hidden; }
 .hero-copy { position: absolute; inset: 0; }
 .hero-title { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 202.23); width: calc(var(--u) * 488.29); font-family: var(--f-display); font-weight: 400; font-size: calc(var(--u) * 48); line-height: 1; letter-spacing: -0.005em; }
-.hero-sub { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 319); width: calc(var(--u) * 369); font-size: calc(var(--u) * 16); line-height: 1.25; }
-.hero-btn {
-  position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 379.07);
-  padding: calc(var(--u) * 11.303) calc(var(--u) * 22.606);
-  background: rgba(189, 189, 189, 0.5);
-  font-weight: 500; font-size: calc(var(--u) * 13.564); line-height: calc(var(--u) * 17);
-  text-transform: uppercase; transition: background .25s;
-}
-.hero-btn:hover { background: #c3c4ff; }
+.hero-title { width: calc(var(--u) * 640); }
+.hero-sub { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 271); width: calc(var(--u) * 427); font-size: calc(var(--u) * 16); line-height: 1.25; }
+.hero-btn { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 311.07); }
 
 .video {
   position: absolute; left: 0; top: 0; width: 100%; height: 100vh; overflow: hidden; background: #000; z-index: 2;
@@ -85,16 +93,8 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
   clip-path: inset(0px calc(var(--u) * 60) 0px calc(var(--u) * 60));
   will-change: transform, clip-path;
 }
-/* Thumbnail = Figma frame "–" (49:1712): 1802.67 × 1014, centred and mirrored, store photo
-   with the point-cloud scan on what ends up as the left half. */
-.video-frame {
-  position: absolute; left: calc(50% - var(--u) * 901.333); top: calc(50% - var(--u) * 507);
-  width: calc(var(--u) * 1802.667); height: calc(var(--u) * 1014);
-  overflow: hidden; background: #fff; transform: scaleX(-1);
-}
-.vf-photo { position: absolute; left: calc(var(--u) * -22.535); top: calc(var(--u) * -65.722); width: calc(var(--u) * 1865.572); height: calc(var(--u) * 1079.722); overflow: hidden; }
-.vf-photo img { position: absolute; left: -0.04%; top: -0.08%; width: 103.27%; height: 100%; max-width: none; }
-.vf-scan { position: absolute; left: calc(var(--u) * 901.332); top: calc(var(--u) * -65.722); width: calc(var(--u) * 983.956); height: calc(var(--u) * 1079.722); }
+/* Thumbnail = Figma "image 3439": associate putting on the Smartbadge, framed on his chest. */
+.video-thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 38%; }
 .pointcloud { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .play {
   position: absolute; left: 50%; top: 50%; width: calc(var(--u) * 117.004); height: calc(var(--u) * 117.004);
@@ -200,21 +200,19 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
 .pv-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .pv-scan { position: absolute; left: calc(var(--u) * 20); bottom: calc(var(--u) * 20); width: calc(var(--u) * 531); height: calc(var(--u) * 346); }
 
-/* ── Testimonials + footer ────────────── */
-/* Band pins at the top under the fixed logo, so its content starts at 108 like the other sections;
-   band (448) + footer (352) still fill one 800 screen. */
-.outro { position: relative; display: flex; flex-direction: column; min-height: max(100vh, calc(var(--u) * 800)); z-index: 3; }
-.testimonials { position: relative; flex: none; height: calc(var(--u) * 448); background: var(--violet); overflow: hidden; }
+/* ── Testimonials, CTA, footer ────────── */
+/* Content starts at 108 like the other sections, clear of the fixed logo. */
+.testimonials { position: relative; height: calc(var(--u) * 448); background: var(--violet); overflow: hidden; z-index: 3; }
 .t-title { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 108); width: calc(var(--u) * 538); }
-.quotes { position: absolute; left: calc(var(--u) * 730); top: calc(var(--u) * 108); width: calc(var(--u) * 650); height: calc(var(--u) * 210); }
-.quote { position: absolute; inset: 0; }
+.quote { position: absolute; left: calc(var(--u) * 730); top: calc(var(--u) * 108); width: calc(var(--u) * 650); }
 .quote blockquote { font-weight: 500; font-size: calc(var(--u) * 24); line-height: 1.25; }
 .quote figcaption { margin-top: calc(var(--u) * 20); font-size: calc(var(--u) * 16); line-height: 1.25; white-space: nowrap; } /* follows the quote at a fixed 20px gap */
-.dots { position: absolute; left: calc(var(--u) * 730); top: calc(var(--u) * 378); display: flex; gap: calc(var(--u) * 10); }
-.dots button { width: calc(var(--u) * 10); height: calc(var(--u) * 10); padding: 0; border: 0; background: rgba(255,255,255,.2); cursor: pointer; transition: background .3s; }
-.dots button.on { background: #fff; }
 
-.footer { position: relative; flex: 1 0 auto; min-height: calc(var(--u) * 352); background: #000; }
+.cta { position: relative; height: calc(var(--u) * 400); background: var(--ink); z-index: 3; }
+.cta-title { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 60); width: calc(var(--u) * 538); }
+.cta-btn { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 244); }
+
+.footer { position: relative; height: calc(var(--u) * 400); background: #000; z-index: 3; }
 .footer .h-display { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 60); width: calc(var(--u) * 538); }
 .signup { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 186); width: calc(var(--u) * 315); height: calc(var(--u) * 28); display: flex; align-items: center; border-bottom: 1px solid #fff; }
 .signup input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: none; color: #fff; font: 400 calc(var(--u) * 16) / 1.25 var(--f-text); }
@@ -226,6 +224,73 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
 .legal { position: absolute; left: calc(var(--u) * 60); right: calc(var(--u) * 60); bottom: calc(var(--u) * 60); display: flex; justify-content: space-between; font-size: calc(var(--u) * 16); line-height: 1.25; color: rgba(255,255,255,.25); }
 .legal-links { display: flex; gap: calc(var(--u) * 20); }
 .legal a:hover { color: rgba(255,255,255,.6); }
+
+/* ── Careers ──────────────────────────── */
+.careers-hero { position: relative; padding-top: calc(var(--u) * 479); background: var(--ink); }
+.careers-intro { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 271); width: calc(var(--u) * 538); }
+.careers-hero .hero-btn { top: calc(var(--u) * 391.07); }
+.careers-image { position: relative; height: calc(var(--u) * 400); overflow: hidden; background: #140e0a; }
+.careers-image img { position: absolute; left: calc(var(--u) * -15); top: calc(var(--u) * -294); width: calc(var(--u) * 1470); height: calc(var(--u) * 1418); max-width: none; will-change: transform; }
+
+.jobs {
+  display: grid; grid-template-columns: calc(var(--u) * 670) calc(var(--u) * 650);
+  padding: calc(var(--u) * 100) calc(var(--u) * 60); min-height: calc(var(--u) * 660);
+  background: var(--ink-2); scroll-margin-top: 0;
+}
+.jobs-title-mask { overflow: hidden; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+.jobs-powered { margin-top: calc(var(--u) * 20); font-size: calc(var(--u) * 16); line-height: 1.25; color: rgba(255,255,255,.4); }
+.jobs-label { font-size: calc(var(--u) * 16); line-height: 1.25; text-transform: uppercase; color: rgba(255,255,255,.6); }
+.filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 20); margin-top: calc(var(--u) * 20); }
+.filter { display: flex; flex-direction: column; gap: calc(var(--u) * 3); border-bottom: 1px solid rgba(255,255,255,.6); cursor: pointer; }
+.filter-name { font-size: calc(var(--u) * 12); line-height: 1.25; color: rgba(255,255,255,.6); }
+.filter select {
+  appearance: none; -webkit-appearance: none; width: 100%; padding: 0 calc(var(--u) * 20) calc(var(--u) * 4) 0; border: 0; border-radius: 0;
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='white' stroke-width='1.4'/%3E%3C/svg%3E") no-repeat right center / calc(var(--u) * 12) calc(var(--u) * 7);
+  color: #fff; font: 400 calc(var(--u) * 16) / 1.25 var(--f-text); cursor: pointer; outline: 0;
+}
+.filter select:focus-visible { outline: 1px solid #c3c4ff; outline-offset: 4px; }
+.filter:hover { border-color: #fff; }
+.filter option { background: var(--ink-2); color: #fff; }
+.job-group { margin-top: calc(var(--u) * 60); }
+.job-list { list-style: none; margin-top: calc(var(--u) * 20); border-bottom: 1px solid rgba(255,255,255,.6); }
+.job {
+  position: relative; display: flex; flex-direction: column; gap: calc(var(--u) * 8);
+  padding: calc(var(--u) * 16) calc(var(--u) * 60) calc(var(--u) * 32) 0; border-top: 1px solid rgba(255,255,255,.6);
+}
+.job-title { font-weight: 500; font-size: calc(var(--u) * 24); line-height: 1.25; transition: color .25s; }
+.job-meta { font-size: calc(var(--u) * 16); line-height: 1.25; color: rgba(255,255,255,.6); }
+.job-arrow { position: absolute; right: 0; top: calc(var(--u) * 20); width: calc(var(--u) * 24); height: calc(var(--u) * 24); transition: transform .3s cubic-bezier(.2,.8,.2,1); }
+.job:hover .job-title { color: #c3c4ff; }
+.job:hover .job-arrow { transform: translateX(calc(var(--u) * 6)); }
+.jobs-status { margin-top: calc(var(--u) * 60); font-size: calc(var(--u) * 16); line-height: 1.25; color: rgba(255,255,255,.6); }
+.link { padding: 0; border: 0; background: none; color: #fff; text-decoration: underline; cursor: pointer; }
+
+/* ── Book a demo: full-screen contact form ── */
+.contact { position: fixed; inset: 0; z-index: 100; background: var(--ink); overflow: auto; }
+.contact-main { position: relative; min-height: 100%; width: calc(var(--u) * 842); padding: calc(var(--u) * 32) 0 calc(var(--u) * 60) calc(var(--u) * 60); }
+.contact-logo { width: calc(var(--u) * 203); height: calc(var(--u) * 91.342); margin-top: calc(var(--u) * 2.76); }
+.contact-label { margin-top: calc(var(--u) * 75); font-size: calc(var(--u) * 16); line-height: 1.25; text-transform: uppercase; }
+.contact-title { width: calc(var(--u) * 782); margin-top: calc(var(--u) * 20); }
+.contact-form { display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--u) * 40); margin-top: calc(var(--u) * 40); }
+.contact-fields { display: flex; align-items: flex-end; gap: calc(var(--u) * 20); }
+.field { display: block; width: calc(var(--u) * 315); border-bottom: 1px solid #fff; }
+.field input, .field textarea {
+  display: block; width: 100%; padding: 0 0 calc(var(--u) * 4); border: 0; outline: 0; background: none; resize: none; overflow: hidden;
+  color: #fff; font: 400 calc(var(--u) * 16) / 1.25 var(--f-text);
+}
+.field input::placeholder, .field textarea::placeholder { color: rgba(255,255,255,.5); }
+.field:focus-within { border-color: #c3c4ff; }
+.contact-thanks .body { width: calc(var(--u) * 427); }
+.contact-media { position: fixed; top: 0; right: 0; bottom: 0; width: calc(100% - var(--u) * 842); overflow: hidden; background: #111; }
+.contact-media img { width: 100%; height: 100%; object-fit: cover; object-position: 0% 50%; }
+.contact-close {
+  position: fixed; top: calc(var(--u) * 32); right: calc(var(--u) * 60); z-index: 2;
+  display: flex; align-items: center; gap: calc(var(--u) * 8); padding: calc(var(--u) * 8) calc(var(--u) * 12);
+  border: 0; background: rgba(20, 20, 24, .55); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  font-size: calc(var(--u) * 14); line-height: 1; cursor: pointer; transition: background .25s;
+}
+.contact-close svg { width: calc(var(--u) * 18); height: calc(var(--u) * 18); }
+.contact-close:hover { background: rgba(20, 20, 24, .85); }
 
 /* ── Video placeholder overlay ────────── */
 .video-overlay { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: rgba(12, 12, 14, 0.92); }
@@ -239,18 +304,29 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
 @media (max-width: 767px) {
   .h-display, .hero-title { font-size: 34px; }
   .body, .hero-sub { font-size: 15px; }
-  .nav { display: none; }
-  .logo { left: 20px; top: 20px; width: 220px; height: 34px; }
-  .logo-icon { top: 4px; width: 66px; height: 30px; }
-  .logo-word { left: 70px; font-size: 35px; }
+  .nav {
+    display: none; position: fixed; inset: 0 0 auto 0; padding: 90px 20px 28px; flex-direction: column; gap: 18px;
+    background: rgba(31, 31, 31, .97); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  }
+  .menu-open .nav { display: flex; opacity: 1 !important; visibility: visible !important; }
+  .nav a { font-size: 22px; }
+  .menu-btn {
+    display: block; position: fixed; top: 24px; right: 20px; z-index: 1; pointer-events: auto;
+    padding: 8px 12px; border: 0; background: rgba(20, 20, 24, .55); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    font-size: 13px; text-transform: uppercase; letter-spacing: .04em; cursor: pointer;
+  }
+  .site-header--careers .menu-btn { position: absolute; }
+  .menu-open .logo { z-index: 1; }
+  .logo { left: 20px; top: 20px; width: 110px; height: 50px; }
+  .logo-icon--purple { top: 0; width: 110px; height: 49.5px; }
+  .logo-icon--white { width: 66px; height: 30px; }
+  .btn { font-size: 13px; padding: 11px 22px; line-height: 17px; }
 
   .intro { height: auto; }
   .hero-copy { position: relative; padding: 130px 20px 40px; }
   .hero-title, .hero-sub, .hero-btn { position: static; width: auto; }
   .hero-sub { margin: 16px 0 24px; max-width: 300px; }
-  .hero-btn { display: inline-block; font-size: 13px; padding: 11px 22px; line-height: 17px; }
   .video { position: relative; height: 62vh; transform: none; clip-path: none; }
-  .video-frame { --u: max(calc(100vw / 1440), calc(62vh / 810)); }
   .play { width: 84px; height: 84px; }
 
   .copy-block, .badge-title, .badge-para { left: 20px; width: calc(100% - 40px); top: 96px; }
@@ -279,15 +355,43 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
   .pr-para { margin-top: 12px; }
   .pr-media { --u: calc((100vw - 40px) / 650); position: relative; left: 0 !important; top: 0; transform: none; margin-top: 32px; }
 
-  .outro { min-height: 0; }
   .testimonials { height: auto; padding: 60px 20px; }
-  .t-title, .quotes, .dots { position: relative; left: 0; top: 0; width: auto; }
-  .quotes { height: 280px; margin-top: 32px; }
+  .t-title, .quote { position: relative; left: 0; top: 0; width: auto; }
+  .quote { margin-top: 32px; }
   .quote blockquote { font-size: 19px; }
   .quote figcaption { position: static; margin-top: 20px; font-size: 14px; white-space: normal; }
-  .dots { --u: 1px; }
-  .footer { min-height: 0; padding: 60px 20px; }
+  .cta { height: auto; padding: 60px 20px; }
+  .cta-title, .cta-btn { position: static; width: auto; }
+  .cta-btn { margin-top: 32px; }
+  .cta .legal { position: static; margin-top: 80px; }
+  .footer { height: auto; padding: 60px 20px; }
   .footer .h-display, .signup, .legal { position: static; width: auto; }
   .signup { --u: 1px; width: 100%; max-width: 320px; margin: 32px 0 80px; }
   .legal { --u: 1px; flex-direction: column; gap: 12px; font-size: 14px; }
+
+  .careers-hero { padding-top: 0; }
+  .careers-hero .hero-title, .careers-intro, .careers-hero .hero-btn { position: static; width: auto; }
+  .careers-hero .hero-title { padding: 130px 20px 0; }
+  .careers-intro { margin: 16px 20px 24px; }
+  .careers-hero .hero-btn { margin: 0 20px 40px; }
+  .careers-image { --u: calc(100vw / 900); height: 240px; }
+  .jobs { --u: 1px; display: block; padding: 60px 20px; }
+  .jobs .h-display { font-size: 34px; }
+  .filters { margin-top: 40px; }
+  .filter-grid { grid-template-columns: 1fr; }
+  .job-title { font-size: 20px; }
+  .job { padding-right: 40px; }
+
+  .contact { --u: 1px; }
+  .contact-main { width: auto; padding: 20px 20px 60px; }
+  .contact-logo { width: 110px; height: 49.5px; }
+  .contact-label { margin-top: 60px; }
+  .contact-title { width: auto; font-size: 34px; }
+  .contact-fields { flex-direction: column; align-items: stretch; width: 100%; gap: 28px; }
+  .contact-form { width: 100%; }
+  .field { width: 100%; }
+  .contact-thanks .body { width: auto; }
+  .contact-media { display: none; }
+  .contact-close { top: 20px; right: 20px; font-size: 13px; padding: 8px 10px; }
+  .contact-close svg { width: 16px; height: 16px; }
 }
