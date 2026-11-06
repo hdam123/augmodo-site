@@ -17,6 +17,8 @@ export const u = () => document.documentElement.clientWidth / DESIGN_W;
 export const U = (n) => `calc(var(--u) * ${n})`;
 
 export function syncUnit() {
+  // A page opened in a hidden tab can report 0 width; keep the stylesheet's 100vw / 1440 until it's real.
+  if (!document.documentElement.clientWidth) return document.documentElement.style.removeProperty('--u');
   document.documentElement.style.setProperty('--u', `${u()}px`);
 }
 

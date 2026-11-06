@@ -69,11 +69,9 @@ export function Intro({ onPlay, onContact }) {
       white: document.querySelector('.logo-icon--white'),
       word: document.querySelector('.logo-word'),
     };
-    // The wordmark fades out over the first stretch of scrolling, leaving just the mark.
-    gsap.to(logo.word, {
-      autoAlpha: 0, x: () => -12 * u(), ease: 'none',
-      scrollTrigger: { start: 0, end: () => 160 * u(), scrub: 0.4, invalidateOnRefresh: true },
-    });
+    // The wordmark wipes away right-to-left and slides into the mark as you scroll, leaving just the mark.
+    const hideWord = { clipPath: 'inset(0% 100% 0% 0%)', x: () => -40 * u(), autoAlpha: 0, ease: 'power1.in' };
+    gsap.set(logo.word, { clipPath: 'inset(0% 0% 0% 0%)' });
 
     mm.add(DESKTOP, () => {
       const tl = gsap.timeline({
@@ -88,11 +86,13 @@ export function Intro({ onPlay, onContact }) {
           { clipPath: () => `inset(0px ${60 * u()}px 0px ${60 * u()}px)` },
           { clipPath: 'inset(0px 0px 0px 0px)', ease: 'power1.inOut', duration: 1 }, 0)
         .to(one('.hero-copy'), { autoAlpha: 0, ease: 'none', duration: 0.55 }, 0.05)
+        .to(logo.word, { ...hideWord, duration: 0.6 }, 0)
         .to(logo.purple, { autoAlpha: 0, duration: 0.25 }, 0.7)
         .to(logo.white, { autoAlpha: 1, duration: 0.25 }, 0.7)
         .to({}, { duration: 0.3 });
     });
     mm.add(MOBILE, () => {
+      gsap.to(logo.word, { ...hideWord, scrollTrigger: { start: 0, end: 260, scrub: 0.5 } });
       ScrollTrigger.create({
         trigger: one('.video'), start: 'top 30%',
         onEnter: () => gsap.to(logo.purple, { autoAlpha: 0, duration: 0.3 }) && gsap.to(logo.white, { autoAlpha: 1 }),
