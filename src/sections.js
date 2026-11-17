@@ -30,26 +30,51 @@ export function revealOnEnter(trigger, targets, start = 'top 80%') {
 
 /* ───────────────────────── Header ───────────────────────── */
 
-// Our Story, FAQ and News aren't designed yet, so they lead back to the homepage.
-const NAV = {
-  home: [['Our Story', '#/'], ['Careers', '#/careers'], ['News', '#/'], ['Contact Us', null]],
-  careers: [['Our Story', '#/'], ['Careers', '#/careers'], ['FAQ', '#/'], ['News', '#/'], ['Contact Us', null]],
-};
+// One nav for every page; the current page's link is marked with .on.
+export const NAV = [
+  ['Product', 'product'], ['Solutions', 'solutions'], ['Our Story', 'our-story'],
+  ['Careers', 'careers'], ['News', 'news'], ['Blog', 'blog'], ['FAQ', 'faq'], ['Contact Us', null],
+];
 
-export function Header({ page = 'home', onContact }) {
+// Solutions opens a menu of its four audience pages; #/solutions alone is For Retailers.
+export const SOLUTIONS = [
+  ['For Retailers', 'retailers'],
+  ['For Brands', 'brands'],
+  ['For Brokers', 'brokers'],
+  ['For Other Industries', 'other-industries'],
+];
+
+export function Header({ page = 'home', slug = '', onContact }) {
   // Phones get a Menu button that opens the same links as a panel.
   const [menu, setMenu] = useState(false);
+  const [sub, setSub] = useState(false);
+  // A click anywhere outside the Solutions menu closes it.
+  useEffect(() => {
+    if (!sub) return;
+    const close = (e) => !e.target.closest('.nav-group') && setSub(false);
+    document.addEventListener('pointerdown', close);
+    return () => document.removeEventListener('pointerdown', close);
+  }, [sub]);
   return html`
-    <header className=${`site-header site-header--${page}${menu ? ' menu-open' : ''}`} onClick=${(e) => e.target.closest('.nav a') && setMenu(false)}>
+    <header className=${`site-header site-header--${page === 'home' ? 'home' : 'inner'}${menu ? ' menu-open' : ''}`} onClick=${(e) => e.target.closest('.nav a') && setMenu(false)}>
       <a className="logo" href="#/" aria-label="Augmodo home">
         <img className="logo-icon logo-icon--purple" src=${A('logo-mark.svg')} alt="" />
         <img className="logo-icon logo-icon--white" src=${A('logo-mark-white.svg')} alt="" />
         <img className="logo-word" src=${A('logo-word.svg')} alt="" />
       </a>
       <nav className="nav">
-        ${NAV[page].map(([label, href]) => (href
-          ? html`<a key=${label} href=${href} className=${label.toLowerCase() === page ? 'on' : ''}>${label}</a>`
-          : html`<a key=${label} href="#/" onClick=${onContact}>${label}</a>`))}
+        ${NAV.map(([label, to]) => (to === 'solutions'
+          ? html`
+            <div key=${label} className=${`nav-group${sub ? ' open' : ''}`}>
+              <button className=${`nav-top${page === to ? ' on' : ''}`} aria-expanded=${sub} onClick=${() => setSub(!sub)}>${label}</button>
+              <div className="nav-sub">
+                ${SOLUTIONS.map(([name, s]) => html`
+                  <a key=${s} href=${`#/solutions/${s}`} className=${page === to && (slug || 'retailers') === s ? 'on' : ''}>${name}</a>`)}
+              </div>
+            </div>`
+          : to
+            ? html`<a key=${label} href=${`#/${to}`} className=${to === page ? 'on' : ''}>${label}</a>`
+            : html`<a key=${label} href="#/" onClick=${onContact}>${label}</a>`))}
       </nav>
       <button className="menu-btn" aria-expanded=${menu} onClick=${() => setMenu(!menu)}>${menu ? 'Close' : 'Menu'}</button>
     </header>`;
@@ -439,8 +464,8 @@ export function Testimonials() {
 
 /* ─────────────── Closing CTA ─────────────── */
 
-// Last section of the homepage, so it also carries the legal row in place of a footer.
-export function Cta({ onContact }) {
+// Last section of the homepage and the content pages, so it also carries the legal row in place of a footer.
+export function Cta({ onContact, title = 'The future of work is augmented. Let’s start with yours.', label = 'Book a demo' }) {
   const ref = useRef(null);
   useScene(ref, ({ one }) => {
     // Starts early: at the bottom of the page this section's top never rises past mid-screen.
@@ -450,19 +475,19 @@ export function Cta({ onContact }) {
   });
   return html`
     <section className="cta" id="footer" ref=${ref}>
-      <h2 className="h-display cta-title">The future of work is augmented. Let’s start with yours.</h2>
-      <button className="btn cta-btn" onClick=${onContact}>Book a demo</button>
+      <h2 className="h-display cta-title">${title}</h2>
+      <button className="btn cta-btn" onClick=${onContact}>${label}</button>
       <${Legal} />
     </section>`;
 }
 
 /* ─────────────── Footer (careers) and legal row ─────────────── */
 
-function Legal() {
+export function Legal() {
   return html`
     <div className="legal">
       <span>© 2026 Augmodo</span>
-      <span className="legal-links"><a href="#/">Privacy Policy</a><a href="#/">Terms Of Use</a></span>
+      <span className="legal-links"><a href="#/faq/privacy">Privacy Policy</a><a href="#/">Terms Of Use</a></span>
     </div>`;
 }
 

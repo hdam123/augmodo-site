@@ -6,9 +6,19 @@ import {
 } from './sections.js';
 import { CareersHero, JobBoard } from './careers.js';
 import { ContactOverlay } from './contact.js';
+import { Product, Solutions, OurStory } from './pages.js';
+import { Brands, Brokers, OtherIndustries } from './solutions.js';
+import { Faq } from './faq.js';
+import { Blog, Article } from './blog.js';
+import { News } from './news.js';
 
-// Hash routes so the prototype runs from any static server: #/ is the homepage, #/careers the careers page.
-const routeOf = () => (location.hash.startsWith('#/careers') ? 'careers' : 'home');
+// Hash routes so the prototype runs from any static server: #/ is the homepage, #/<page>[/<slug>] the rest
+// (#/blog/<article>, #/faq/<topic>, #/solutions/<audience>).
+const PAGES = ['product', 'solutions', 'our-story', 'careers', 'news', 'blog', 'faq'];
+const routeOf = () => {
+  const [, page = '', slug = ''] = location.hash.split('/');
+  return PAGES.includes(page) ? `${page}/${slug}` : 'home/';
+};
 
 export function App() {
   const [route, setRoute] = useState(routeOf);
@@ -52,30 +62,41 @@ export function App() {
   }, [layoutKey, route]);
 
   const openContact = (e) => { e?.preventDefault(); setContactOpen(true); };
+  const [page, slug] = route.split('/');
   const key = `${route}-${layoutKey}`;
+  const body = {
+    product: () => html`<${Product} onContact=${openContact} />`,
+    solutions: () => {
+      // #/solutions on its own is For Retailers.
+      const Audience = { brands: Brands, brokers: Brokers, 'other-industries': OtherIndustries }[slug] || Solutions;
+      return html`<${Audience} onContact=${openContact} />`;
+    },
+    'our-story': () => html`<${OurStory} onContact=${openContact} />`,
+    news: () => html`<${News} onContact=${openContact} />`,
+    faq: () => html`<${Faq} onContact=${openContact} section=${slug} />`,
+    blog: () => (slug ? html`<${Article} slug=${slug} onContact=${openContact} />` : html`<${Blog} />`),
+    careers: () => html`
+      <${CareersHero} />
+      <${JobBoard} />
+      <${Footer} />`,
+    home: () => html`
+      <${Intro} onPlay=${() => setVideoOpen(true)} onContact=${openContact} />
+      <${Smartbadge} />
+      <${Spatialview} />
+      <div className="scale-retail">
+        <${EasyToScale} />
+        <${RetailBrand} />
+      </div>
+      <${AugmentedWorkforce} />
+      <${Privacy} />
+      <${Testimonials} />
+      <${Cta} onContact=${openContact} />`,
+  }[page];
 
   return html`
     <${React.Fragment}>
-      <${Header} key=${`h${key}`} page=${route} onContact=${openContact} />
-      <main key=${key} className=${`page page--${route}`}>
-        ${route === 'careers'
-          ? html`
-            <${CareersHero} />
-            <${JobBoard} />
-            <${Footer} />`
-          : html`
-            <${Intro} onPlay=${() => setVideoOpen(true)} onContact=${openContact} />
-            <${Smartbadge} />
-            <${Spatialview} />
-            <div className="scale-retail">
-              <${EasyToScale} />
-              <${RetailBrand} />
-            </div>
-            <${AugmentedWorkforce} />
-            <${Privacy} />
-            <${Testimonials} />
-            <${Cta} onContact=${openContact} />`}
-      </main>
+      <${Header} key=${`h${key}`} page=${page} slug=${slug} onContact=${openContact} />
+      <main key=${key} className=${`page page--${page}`}>${body()}</main>
       <${VideoOverlay} open=${videoOpen} onClose=${() => setVideoOpen(false)} />
       <${ContactOverlay} open=${contactOpen} onClose=${() => setContactOpen(false)} />
     <//>`;
