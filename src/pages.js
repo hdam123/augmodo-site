@@ -101,7 +101,7 @@ export function Solutions({ onContact }) {
         sub="Augmodo gives your teams real-time shelf intelligence without changing how they work. Associates wear the Smartbadge™, and SpatialView™ shows HQ, store managers and associates exactly where to act.">
         <button className="btn" onClick=${onContact}>Book a demo</button>
       <//>
-      <${Band} src="store.jpg" alt="Grocery produce aisle" pos="50% 55%" />
+      <${Band} src="photos/retail-aisle.jpg" alt="Long, brightly lit supermarket aisle" pos="50% 55%" />
 
       <${Split} label="The problem" title="Every empty shelf is a silent tax on revenue.">
         <${Stats} items=${[
@@ -132,7 +132,7 @@ export function Solutions({ onContact }) {
         ]} />
       <//>
 
-      <${Band} src="city.jpg" alt="City skyline at dusk" pos="50% 40%" />
+      <${Band} src="photos/retail-checkout.jpg" alt="Associate working a supermarket checkout" pos="50% 45%" />
 
       <${Split} tone="alt" title="Built for every level of your business">
         <${Rows} items=${[
@@ -187,7 +187,7 @@ export function OurStory({ onContact }) {
         <button className="btn" onClick=${onContact}>Book a demo</button>
         <a className="btn btn--ghost" href="#/careers">Join the team</a>
       <//>
-      <${Band} src="city.jpg" alt="City skyline at dusk" pos="50% 35%" />
+      <${Band} src="photos/story-city.jpg" alt="City lights at night from above" pos="50% 50%" />
 
       <${Split} title="The gap">
         <${Stats} items=${[['100+ miles', 'Driven looking for baby formula every inventory system said was in stock.']]} />
@@ -211,9 +211,10 @@ export function OurStory({ onContact }) {
         <p className="h-display statement-text" data-lines>The physical workforce is the largest, least-instrumented labor category on earth. Augmodo is building the infrastructure to enable them. The future of work is augmented.</p>
       </section>
 
-      <${Band} src="badge.jpg" alt="Store associate wearing the Augmodo Smartbadge" pos="60% 45%" />
+      <${Band} src="photos/story-team.jpg" alt="Team working together around a table" pos="50% 85%" />
 
       <${Split} title="Join our team">
+        <${Prose} lead><p>We strive to take the deepest tech and make it easy, approachable, and helpful to the >100m people working in commerce.</p><//>
         <div data-fade><a className="btn" href="#/careers">See open roles</a></div>
       <//>
 
@@ -221,7 +222,7 @@ export function OurStory({ onContact }) {
         <${Prose} lead><p>Writing about Augmodo? Get our press kit, logos and photos.</p><//>
         <div className="pg-actions" data-fade>
           <a className="btn" href="mailto:press@augmodo.com?subject=Press%20kit%20request">Press kit</a>
-          <${TextLink} href="mailto:press@augmodo.com">press@augmodo.com<//>
+          <a className="btn" href="mailto:press@augmodo.com">Email</a>
         </div>
       <//>
 

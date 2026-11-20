@@ -1,55 +1,61 @@
 import { useEffect, useRef, useState } from 'react';
 import { html, gsap } from './lib.js';
-import { A, Cta } from './sections.js';
+import { Cta } from './sections.js';
 import { Page, PageHero } from './blocks.js';
+import { Thumb as Tile } from './thumb.js';
 
 /* ─────────────── News (content from augmodo.com/news, 9 Nov 2026) ───────────────
    Each story links out to the original coverage or release. Images were saved from the live
-   page into assets/news; `logo` marks the ones that are a publication's logo, not a photo. */
+   page into assets/news; `logo` marks the ones that are a publication's logo, not a photo
+   (shown from the trimmed logo-XX.png copies on a white tile). */
 
 const NEWS = [
-  { type: 'Press', date: '2026-10-07', img: '01.jpg', url: 'https://www.adammendler.com/ai-in-the-workplace/',
+  { type: 'Press', date: '2026-10-07', img: '01-workplace.jpg', th: { kind: 'photo' }, url: 'https://www.adammendler.com/ai-in-the-workplace/',
     title: 'AI in the Workplace: How Work Is Changing',
     dek: 'Ross Finman joins business leaders on the AI trends to watch: AI arriving on the frontline as a physical object, clipped to a shirt or built into glasses.' },
-  { type: 'Press', date: '2026-09-16', img: '02.jpg', url: 'https://www.augmodo.com/augmodo-unveils-owl-mini-owl-pro',
+  { type: 'Press', date: '2026-09-16', img: '02-owl-lineup.jpg', th: { kind: 'photo', pos: '50% 60%' }, url: 'https://www.augmodo.com/augmodo-unveils-owl-mini-owl-pro',
     title: 'Augmodo Unveils Wearable Owl Mini and Owl Pro: Shrinking Physical AI Into Smallest, Smartest Smartbadge™ Ever Built',
     dek: 'Six hardware generations developed in 24 months, shaped by workers who wear it. Augmodo is making jobs easier with smarter, lighter Smartbadge™: Physical AI moving at software speed.' },
-  { type: 'News', date: '2026-07-13', img: '03.jpg', url: 'https://www.augmodo.com/augmodo-secures-21m-to-scale-ai-assistants-for-the-physical-workforce-beyond-retail-at-a-350m-valuation',
+  { type: 'News', date: '2026-07-13', img: '03.jpg', th: { kind: 'figure', figure: '$350M', caption: 'Valuation' }, url: 'https://www.augmodo.com/augmodo-secures-21m-to-scale-ai-assistants-for-the-physical-workforce-beyond-retail-at-a-350m-valuation',
     title: 'Augmodo Secures $21M to Scale AI Assistants for the Physical Workforce Beyond Retail at a $350M Valuation' },
-  { type: 'News', date: '2025-09-16', img: '04.jpg', url: 'https://www.augmodo.com/augmodo-dunnhumby-release',
+  { type: 'News', date: '2025-09-16', img: '04.jpg', th: { kind: 'halftone', src: 'photos/news-store-interior.jpg' }, url: 'https://www.augmodo.com/augmodo-dunnhumby-release',
     title: 'Augmodo + dunnhumby Forecast How Spatial AI Will Revolutionize Retail' },
-  { type: 'News', date: '2025-04-01', img: '05.jpg', url: 'https://retailtechinnovationhub.com/home/2025/3/31/augmodo-snags-chemist-warehouse-partnership-hires-simon-morriss-as-commercial-director-for-apac',
+  { type: 'News', date: '2025-04-01', img: '05.jpg', th: { kind: 'figure', figure: '$18M', caption: 'Partnership', dark: true }, url: 'https://retailtechinnovationhub.com/home/2025/3/31/augmodo-snags-chemist-warehouse-partnership-hires-simon-morriss-as-commercial-director-for-apac',
     title: 'Augmodo & Chemist Warehouse launch $18M partnership' },
-  { type: 'News', date: '2025-01-06', img: '07.png', logo: true, url: 'https://retailtechinnovationhub.com/home/2025/1/4/including-agency-72-and-shopai-rtih-presents-12-retail-technology-startups-to-watch-out-for-in-2025',
+  { type: 'News', date: '2025-01-06', img: '07.png', logo: true, th: { side: 'photos/strip-produce.jpg' }, url: 'https://retailtechinnovationhub.com/home/2025/1/4/including-agency-72-and-shopai-rtih-presents-12-retail-technology-startups-to-watch-out-for-in-2025',
     title: 'Augmodo selected as top retail tech start-up to watch for 2025' },
-  { type: 'News', date: '2024-12-31', img: '06.jpg', url: 'https://www.supermarketperimeter.com/articles/12157-augmented-reality-enhancing-employees-putting-consumers-first',
+  { type: 'News', date: '2024-12-31', img: '06.jpg', th: { kind: 'photo' }, url: 'https://www.supermarketperimeter.com/articles/12157-augmented-reality-enhancing-employees-putting-consumers-first',
     title: 'Augmented Reality, Enhancing Employees and Putting Consumers First' },
-  { type: 'News', date: '2024-12-20', img: '08.jpg', url: 'https://progressivegrocer.com/smartbadge-now-boosts-grocery-e-comm-profitability',
+  { type: 'News', date: '2024-12-20', img: '08.jpg', th: { kind: 'logo', logo: 'news/mercatus-black.svg', side: 'photos/strip-carts.jpg' }, url: 'https://progressivegrocer.com/smartbadge-now-boosts-grocery-e-comm-profitability',
     title: 'Augmodo and Mercatus Introduce New Tech to Increase Profitability of Grocery eCommerce' },
-  { type: 'News', date: '2024-12-11', img: '09.jpg', url: 'https://entrepreneurloop.com/chemist-warehouse-launches-pilot-with-augmodo-providing-store-associates-with-spatial-ai-assistants/',
+  { type: 'News', date: '2024-12-11', img: '09.jpg', th: { kind: 'photo' }, url: 'https://entrepreneurloop.com/chemist-warehouse-launches-pilot-with-augmodo-providing-store-associates-with-spatial-ai-assistants/',
     title: 'Chemist Warehouse Launches Pilot With Augmodo' },
-  { type: 'News', date: '2024-10-17', img: '10.jpg', url: 'https://retailtechinnovationhub.com/home/2024/10/15/retail-technology-startup-stories-interview-ross-finman-founder-and-ceo-at-augmodo',
+  { type: 'News', date: '2024-10-17', img: '10.jpg', th: { kind: 'halftone' }, url: 'https://retailtechinnovationhub.com/home/2024/10/15/retail-technology-startup-stories-interview-ross-finman-founder-and-ceo-at-augmodo',
     title: 'Retail Technology Startup Stories Interview: Ross Finman, Founder and CEO at Augmodo' },
-  { type: 'News', date: '2024-10-08', img: '11.jpg', url: 'https://coresight.com/research/groceryshop-2024-shark-reef-startup-pitch-recap/',
+  { type: 'News', date: '2024-10-08', img: '11.jpg', th: { kind: 'photo' }, url: 'https://coresight.com/research/groceryshop-2024-shark-reef-startup-pitch-recap/',
     title: 'Groceryshop 2024 “Shark Reef” Startup Pitch Competition: 12 Innovators, Two Winners' },
-  { type: 'News', date: '2024-10-07', img: '12.png', logo: true, url: 'https://progressivegrocer.com/could-ai-powered-employee-badges-become-game-changer',
+  { type: 'News', date: '2024-10-07', img: '12.png', logo: true, th: { side: 'photos/strip-storefront.jpg' }, url: 'https://progressivegrocer.com/could-ai-powered-employee-badges-become-game-changer',
     title: 'Could AI-Powered Employee Badges Become a Game Changer?' },
-  { type: 'News', date: '2024-10-02', img: '13.png', logo: true, url: 'https://www.geekwire.com/2024/inventory-tracking-startup-augmodo-raises-5-3m-to-monitor-store-shelves-via-wearable-tech/',
+  { type: 'News', date: '2024-10-02', img: '13.png', logo: true, th: { side: 'photos/strip-aisle.jpg' }, url: 'https://www.geekwire.com/2024/inventory-tracking-startup-augmodo-raises-5-3m-to-monitor-store-shelves-via-wearable-tech/',
     title: 'Inventory tracking startup Augmodo raises $5.3M to monitor store shelves via wearable tech' },
-  { type: 'News', date: '2024-08-20', img: '14.png', logo: true, url: 'https://www.supermarketnews.com/grocery-technology/augmented-reality-company-augmodo-wins-fmi-techpitch-competition',
+  { type: 'News', date: '2024-08-20', img: '14.png', logo: true, th: { side: 'photos/strip-snacks.jpg' }, url: 'https://www.supermarketnews.com/grocery-technology/augmented-reality-company-augmodo-wins-fmi-techpitch-competition',
     title: 'Augmented Reality Company Augmodo Wins FMI TechPitch Competition',
     dek: 'Supermarket News sat down with CEO Ross Finman to talk about the win, as well as the future of augmented reality in grocery' },
-  { type: 'Press', date: '2024-02-21', img: '13.png', logo: true, url: 'https://www.geekwire.com/2024/former-niantic-leaders-spatial-computing-startup-aims-to-help-retailers-track-shelf-inventory/',
+  { type: 'Press', date: '2024-02-21', img: '13.png', logo: true, th: { side: 'photos/strip-pharmacy.jpg' }, url: 'https://www.geekwire.com/2024/former-niantic-leaders-spatial-computing-startup-aims-to-help-retailers-track-shelf-inventory/',
     title: 'Former Niantic Leader’s Spatial computing startup aims to help retailers track shelf inventory' },
 ];
 
 const fmt = (d) => new Date(`${d}T12:00:00`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
+// Thumbnails follow the visual-identity tiles (src/thumb.js): photos get the violet strip, logos sit
+// white on the dark tile, and `th` picks a different treatment for a story.
 function Thumb({ item, className }) {
-  return html`
-    <div className=${`news-img${item.logo ? ' news-img--logo' : ''}${className ? ` ${className}` : ''}`}>
-      <img src=${A(`news/${item.img}`)} alt="" loading="lazy" />
-    </div>`;
+  const base = item.logo
+    ? { kind: 'logo', logo: `news/logo-${item.img.replace('.png', '')}.png` }
+    : { kind: 'split', src: `news/${item.img}` };
+  const th = { ...base, ...item.th };
+  if (th.kind === 'halftone' && !th.src) th.src = `news/${item.img}`;
+  return html`<${Tile} ...${th} className=${`news-img${className ? ` ${className}` : ''}`} />`;
 }
 
 const Meta = ({ item }) => html`<p className="news-meta"><span>${item.type}</span><span>${fmt(item.date)}</span></p>`;
@@ -82,7 +88,7 @@ export function News({ onContact }) {
           <${Meta} item=${featured} />
           <h2 className="h-display news-featured-title">${featured.title}</h2>
           <p className="body news-dek">${featured.dek}</p>
-          <span className="text-link">Read more<img src=${A('arrow.svg')} alt="" /></span>
+          <span className="text-link">Read more</span>
         </div>
       </a>
 
@@ -105,7 +111,7 @@ export function News({ onContact }) {
               <${Meta} item=${n} />
               <h3 className="news-title">${n.title}</h3>
               ${n.dek && html`<p className="news-dek">${n.dek}</p>`}
-              <span className="text-link">Read more<img src=${A('arrow.svg')} alt="" /></span>
+              <span className="text-link">Read more</span>
             </a>`)}
         </div>
         ${!shown.length && html`

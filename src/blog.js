@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react';
 import { html } from './lib.js';
 import { A, Cta } from './sections.js';
 import { Page, PageHero, Band, TextLink } from './blocks.js';
+import { Thumb } from './thumb.js';
 
 /* ─────────────── Blog (copy: "Augmodo Website Content_Blog") ───────────────
    Article 2 (Augmodo vs. Manual Audits, RFID, Fixed Cameras, and Robots) is marked [HOLD]
    in the doc, so it isn't published here. Blocks: ['lead'|'h'|'p', text], ['ol'|'ul', items]
-   where an item is text or [bold, rest], ['table', head, rows], ['faq', [[q, a]]], ['calc']. */
+   where an item is text or [bold, rest], ['table', head, rows], ['faq', [[q, a]]], ['calc'].
+   `th` is the list-card thumbnail treatment (src/thumb.js); `hero` gives the article page its own photo
+   so the card and the article never show the same image. */
 
 const ABOUT = 'Augmodo builds Physical AI assistants for the physical workforce. A passive Smartbadge™ turns ordinary movement into a live 3D map of what’s happening on the floor, giving a new hire the situational awareness of a two-year veteran. Augmodo sees the work, not the worker. Today Augmodo maps more than 186 million square feet every month across some of the largest retailers and CPG brands in the world.';
 
@@ -16,7 +19,7 @@ export const ARTICLES = [
     tag: 'Physical AI',
     title: 'What Is Physical AI?',
     dek: 'Physical AI is AI that perceives physical space and reasons about the work inside it. Learn how Physical AI for the physical workforce works.',
-    image: 'video-thumb-lanyard.jpg', pos: '50% 38%',
+    image: 'video-thumb-lanyard.jpg', pos: '50% 38%', th: { kind: 'split' }, hero: 'photos/article-warehouse-team.jpg',
     blocks: [
       ['lead', 'AI assistants for the physical workforce.'],
       ['h', 'What is Physical AI?'],
@@ -63,7 +66,7 @@ export const ARTICLES = [
     tag: 'Retail',
     title: 'What an Out-of-Stock Actually Costs a Store per Day',
     dek: 'Out-of-stocks cost retailers an estimated $1.2 trillion in sales worldwide. See what one missing item costs a store per day and how to close gaps faster.',
-    image: 'store.jpg', pos: '50% 55%',
+    image: 'photos/article-empty-shelves.jpg', pos: '50% 50%', th: { kind: 'figure', figure: '$4.31', caption: 'Per item, per day' },
     blocks: [
       ['lead', 'An estimated $1.2 trillion in retail sales is lost globally to out-of-stocks. The fix is seeing gaps within the same shift, while shoppers can still buy.'],
       ['h', 'What is a shelf gap, and how is it different from an out-of-stock?'],
@@ -106,7 +109,7 @@ export const ARTICLES = [
     tag: 'Brands',
     title: 'How CPG Brands Verify In-Store Execution Without More Field Audits',
     dek: 'CPG brands can see shelf truth in every store, every day, without more field audits. Here is how Repbadge and SpatialView work.',
-    image: 'contact.jpg', pos: '50% 60%',
+    image: 'photos/article-packaged-goods.jpg', pos: '50% 50%', th: { kind: 'halftone' }, hero: 'photos/article-drinks-shelf.jpg',
     blocks: [
       ['lead', 'Consumer Packaged Goods (CPG) brands spend millions designing the perfect retail strategy, but success ultimately hinges on one crucial factor: in-store execution.'],
       ['p', 'Traditionally, verifying whether products actually land on the shelf as planned required endless field audits, a manual, costly, and notoriously slow process. Today, CPG brands are transforming how they manage retail operations by accessing continuous, real-time “shelf truth” across every store, without adding a single extra audit to their reps’ schedules.'],
@@ -192,11 +195,11 @@ export function Blog() {
       <section className="posts">
         ${ARTICLES.map((a) => html`
           <a className="post" href=${`#/blog/${a.slug}`} key=${a.slug} data-fade>
-            <div className="post-image"><img src=${A(a.image)} alt="" style=${{ objectPosition: a.pos }} /></div>
+            <${Thumb} src=${a.image} pos=${a.pos} ...${a.th} className="post-image" />
             <p className="post-meta">${a.tag} · ${minutes(a)} min read</p>
             <h2 className="post-title">${a.title}</h2>
             <p className="post-dek">${a.dek}</p>
-            <span className="text-link">Read article<img src=${A('arrow.svg')} alt="" /></span>
+            <span className="text-link">Read article</span>
           </a>`)}
       </section>
     <//>`;
@@ -262,11 +265,11 @@ export function Article({ slug, onContact }) {
   return html`
     <${Page}>
       <${PageHero} eyebrow=${`Blog · ${a.tag}`} title=${a.title} sub=${a.dek} />
-      <${Band} src=${a.image} alt="" pos=${a.pos} />
+      <${Band} src=${a.hero || a.image} alt="" pos=${a.hero ? '50% 50%' : a.pos} />
       <article className="art">
         <aside className="art-side">
           <div className="art-side-inner">
-            <a className="art-back" href="#/blog">← All articles</a>
+            <a className="text-link art-back" href="#/blog">All articles</a>
             <p className="eyebrow">${minutes(a)} min read</p>
           </div>
         </aside>

@@ -15,7 +15,7 @@ export function Brands({ onContact }) {
         sub="Augmodo shows you what’s actually happening to your products in store, continuously, not quarterly.">
         <button className="btn" onClick=${onContact}>Book a demo</button>
       <//>
-      <${Band} src="store-aisles.jpg" alt="Supermarket aisles seen from above" pos="50% 50%" />
+      <${Band} src="photos/brand-cereal.jpg" alt="Cereal boxes stocked on a supermarket shelf" pos="50% 50%" />
 
       <${Split} label="The problem" title="Most shelf leakage goes unseen until the damage is done.">
         <${Stats} items=${[
@@ -51,7 +51,7 @@ export function Brands({ onContact }) {
         ]} />
       <//>
 
-      <${Band} src="city.jpg" alt="City skyline at dusk" pos="50% 40%" />
+      <${Band} src="photos/brand-cooler.jpg" alt="Rows of soft-drink cans in a store cooler" pos="50% 50%" />
 
       <${Split} tone="alt" title="6 to 20x typical ROI">
         <${Rows} compact items=${[
@@ -102,7 +102,7 @@ export function Brokers({ onContact }) {
         sub="Your business is serving your CPG clients. Augmodo turns the work your reps already do into continuous, store-level evidence, so every visit is faster, every hour counts and every client sees the proof.">
         <button className="btn" onClick=${onContact}>Book a demo</button>
       <//>
-      <${Band} src="badge.jpg" alt="The Augmodo Smartbadge" pos="50% 50%" />
+      <${Band} src="photos/broker-promo.jpg" alt="Store shelf with a promotional sale sign" pos="50% 50%" />
 
       <${Split} title="The challenge">
         <${Prose} lead>
@@ -128,7 +128,7 @@ export function Brokers({ onContact }) {
         ]} />
       <//>
 
-      <${Band} src="store-aisles.jpg" alt="Supermarket aisles seen from above" pos="50% 60%" />
+      <${Band} src="photos/broker-shelf.jpg" alt="Supermarket shelf with price tags" pos="50% 50%" />
 
       <${Split} tone="alt" title="Effectiveness">
         <${Rows} items=${[
@@ -158,7 +158,7 @@ export function OtherIndustries({ onContact }) {
         sub="Smartbadge intelligence works anywhere people do physical work, from the retail shelf to the warehouse rack to the factory floor.">
         <button className="btn" onClick=${onContact}>Partner with us</button>
       <//>
-      <${Band} src="city.jpg" alt="City skyline at dusk" pos="50% 40%" />
+      <${Band} src="photos/industry-warehouse.jpg" alt="Warehouse aisle between tall pallet racks" pos="50% 55%" />
 
       <${Split} title="The same gap, everywhere">
         <${Prose} lead>
@@ -179,7 +179,7 @@ export function OtherIndustries({ onContact }) {
         <//>
       <//>
 
-      <${Band} src="badge.jpg" alt="The Augmodo Smartbadge" pos="50% 50%" />
+      <${Band} src="photos/industry-factory.jpg" alt="Automated production line on a factory floor" pos="50% 50%" />
 
       <${Split} tone="alt" title="More physical workplaces">
         <${Prose} lead>

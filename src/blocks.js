@@ -107,18 +107,22 @@ export function Quotes({ title = 'What our partners are saying.', items }) {
 
   useEffect(() => {
     if (first.current) { first.current = false; return; }
-    gsap.fromTo(ref.current.querySelectorAll('.quote > *'), { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.08, ease: 'power3.out' });
+    gsap.fromTo(ref.current.querySelectorAll('.quote.on > *'), { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.7, stagger: 0.08, ease: 'power3.out' });
   }, [i]);
 
-  const [quote, who] = items[i];
+  // Every quote is stacked in the same cell and only the current one shows, so the band is exactly as
+  // tall as its longest quote and doesn't jump as they cycle.
   return html`
     <section className="quotes" ref=${ref}>
       <h2 className="h-display" data-lines>${title}</h2>
       <div>
-        <figure className="quote quote--flow" data-fade>
-          <blockquote>“${quote}”</blockquote>
-          <figcaption>${who}</figcaption>
-        </figure>
+        <div className="quote-stack" data-fade>
+          ${items.map(([quote, who], n) => html`
+            <figure key=${n} className=${`quote quote--flow${n === i ? ' on' : ''}`} aria-hidden=${n !== i}>
+              <blockquote>“${quote}”</blockquote>
+              <figcaption>${who}</figcaption>
+            </figure>`)}
+        </div>
         ${items.length > 1 && html`
           <div className="dots" role="tablist" aria-label="Testimonials">
             ${items.map((_, n) => html`
@@ -130,4 +134,4 @@ export function Quotes({ title = 'What our partners are saying.', items }) {
 
 // Text link with the Figma arrow, for in-page links such as "Read Trust & Privacy".
 export const TextLink = ({ href, children, onClick }) => html`
-  <a className="text-link" href=${href} onClick=${onClick}>${children}<img src=${A('arrow.svg')} alt="" /></a>`;
+  <a className="text-link" href=${href} onClick=${onClick}>${children}</a>`;

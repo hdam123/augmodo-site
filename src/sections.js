@@ -60,7 +60,7 @@ export function Header({ page = 'home', slug = '', onContact }) {
       <a className="logo" href="#/" aria-label="Augmodo home">
         <img className="logo-icon logo-icon--purple" src=${A('logo-mark.svg')} alt="" />
         <img className="logo-icon logo-icon--white" src=${A('logo-mark-white.svg')} alt="" />
-        <img className="logo-word" src=${A('logo-word.svg')} alt="" />
+        <span className="logo-word-wrap"><img className="logo-word" src=${A('logo-word.svg')} alt="" /></span>
       </a>
       <nav className="nav">
         ${NAV.map(([label, to]) => (to === 'solutions'
@@ -95,8 +95,9 @@ export function Intro({ onPlay, onContact }) {
       word: document.querySelector('.logo-word'),
     };
     // The wordmark wipes away right-to-left and slides into the mark as you scroll, leaving just the mark.
-    const hideWord = { clipPath: 'inset(0% 100% 0% 0%)', x: () => -40 * u(), autoAlpha: 0, ease: 'power1.in' };
-    gsap.set(logo.word, { clipPath: 'inset(0% 0% 0% 0%)' });
+    // The wordmark slides left into the mark and fades: its holder is clipped at the mark's right edge, so
+    // it reads as going behind the mark rather than across it.
+    const hideWord = { x: () => -180 * u(), autoAlpha: 0, ease: 'power1.in' };
 
     mm.add(DESKTOP, () => {
       const tl = gsap.timeline({
