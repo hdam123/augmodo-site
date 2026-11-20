@@ -106,7 +106,7 @@ export function Intro({ onPlay, onContact }) {
           pin: true, scrub: 1, invalidateOnRefresh: true,
         },
       });
-      tl.fromTo(one('.video'), { y: () => 479 * u() }, { y: 0, ease: 'none', duration: 1 })
+      tl.fromTo(one('.video'), { y: () => 358 * u() }, { y: 0, ease: 'none', duration: 1 })
         // thumbnail sits inside the 60px page margins, then opens to full screen as it rises
         .fromTo(one('.video'),
           { clipPath: () => `inset(0px ${60 * u()}px 0px ${60 * u()}px)` },
@@ -130,7 +130,7 @@ export function Intro({ onPlay, onContact }) {
   return html`
     <section className="intro" id="top" ref=${ref}>
       <div className="hero-copy">
-        <h1 className="hero-title">Augment your workforce</h1>
+        <h1 className="hero-title">Augment your<br />workforce</h1>
         <p className="hero-sub">Wearable AI assistants for the physical workforce</p>
         <button className="btn hero-btn" onClick=${onContact}>Book a demo</button>
       </div>
@@ -220,7 +220,9 @@ export function Spatialview() {
         defaults: { ease: 'power2.inOut' },
         scrollTrigger: {
           trigger: ref.current, start: 'top top', end: () => `+=${vh() * 3}`,
-          pin: true, scrub: 1, invalidateOnRefresh: true,
+          // .scale-retail is pinned later for the Retail/Brand hold, and a pinned element carries a transform
+          // that would trap this pin's position: fixed. Reparenting to <body> while pinned keeps it fixed.
+          pin: true, pinReparent: true, scrub: 1, invalidateOnRefresh: true,
         },
       });
       tl.from(titleLines, { ...LINE_IN, duration: 0.6 }, 0.1)
@@ -281,10 +283,7 @@ export function EasyToScale() {
         defaults: { ease: 'power2.out' },
         scrollTrigger: {
           trigger: ref.current, start: 'top top', end: () => `+=${vh() * 2.6}`,
-          // The .scale-retail wrapper is pinned later for the Retail/Brand hold, and a pinned
-          // element carries a transform that would trap this pin's position: fixed. Reparenting
-          // to <body> while pinned keeps it fixed to the screen.
-          pin: true, pinReparent: true, scrub: 1, invalidateOnRefresh: true,
+          pin: true, scrub: 1, invalidateOnRefresh: true,
         },
       });
       tl.from(lines, { ...LINE_IN, duration: 0.6 }, 0.1)
@@ -336,7 +335,7 @@ export function RetailBrand() {
       .from(q('.rb-rule'), { scaleX: 0, transformOrigin: 'left', duration: 0.8, stagger: 0.07, ease: 'power3.inOut' }, 0.1)
       .from(q('.rb-text'), { yPercent: 140, duration: 0.7, stagger: 0.07, ease: 'power3.out' }, 0.3);
 
-    // Frames 15 → 16: hold with the city still above (pin the city + section wrapper once the
+    // Frames 15 → 16: hold with Spatialview still above (pin it + this section's wrapper once the
     // section's bottom meets the screen's) and flip to BRAND halfway. Clicks still work; scroll
     // only sets the mode when it crosses the midpoint.
     mm.add(DESKTOP, () => {
@@ -484,10 +483,24 @@ export function Cta({ onContact, title = 'The future of work is augmented. Let�
 
 /* ─────────────── Footer (careers) and legal row ─────────────── */
 
+// Social links from the content doc ("[SOCIALS ICONS]"), drawn as 20px monochrome icons.
+const SOCIALS = [
+  ['LinkedIn', 'https://www.linkedin.com/company/augmodo', 'M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4V21H3zM9.5 9.75h3.83v1.54h.05c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.67 4.8 6.13V21h-4v-4.98c0-1.19-.02-2.72-1.66-2.72-1.66 0-1.91 1.3-1.91 2.63V21h-4z'],
+  ['X', 'http://x.com/augmodo/', 'M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77zm-1.08 16.18h1.7L7.4 4.73H5.58z'],
+  ['Instagram', 'https://www.instagram.com/augmodoai/', 'M12 2.2c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92C2.21 15.58 2.2 15.2 2.2 12s.01-3.58.07-4.85C2.42 3.92 3.94 2.38 7.15 2.23 8.42 2.21 8.8 2.2 12 2.2zm0 4.86a4.94 4.94 0 1 0 0 9.88 4.94 4.94 0 0 0 0-9.88zm0 8.14a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4zm5.14-9.5a1.15 1.15 0 1 0 0 2.3 1.15 1.15 0 0 0 0-2.3z'],
+  ['YouTube', 'https://www.youtube.com/@Augmodo', 'M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6z'],
+];
+
 export function Legal() {
   return html`
     <div className="legal">
       <span>© 2026 Augmodo</span>
+      <span className="socials">
+        ${SOCIALS.map(([name, href, d]) => html`
+          <a key=${name} href=${href} target="_blank" rel="noopener noreferrer" aria-label=${name}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d=${d} /></svg>
+          </a>`)}
+      </span>
       <span className="legal-links"><a href="#/faq/privacy">Privacy Policy</a><a href="#/">Terms Of Use</a></span>
     </div>`;
 }

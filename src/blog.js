@@ -188,7 +188,7 @@ const minutes = (a) => Math.max(1, Math.round(words(a.blocks) / 230));
 
 /* ── Index ── */
 
-export function Blog() {
+export function Blog({ onContact }) {
   return html`
     <${Page}>
       <${PageHero} eyebrow="Blog" title="AI assistants for the physical workforce." />
@@ -202,6 +202,7 @@ export function Blog() {
             <span className="text-link">Read article</span>
           </a>`)}
       </section>
+      <${Cta} onContact=${onContact} />
     <//>`;
 }
 

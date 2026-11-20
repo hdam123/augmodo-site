@@ -74,7 +74,7 @@ export function App() {
     'our-story': () => html`<${OurStory} onContact=${openContact} />`,
     news: () => html`<${News} onContact=${openContact} />`,
     faq: () => html`<${Faq} onContact=${openContact} section=${slug} />`,
-    blog: () => (slug ? html`<${Article} slug=${slug} onContact=${openContact} />` : html`<${Blog} />`),
+    blog: () => (slug ? html`<${Article} slug=${slug} onContact=${openContact} />` : html`<${Blog} onContact=${openContact} />`),
     careers: () => html`
       <${CareersHero} />
       <${JobBoard} />
@@ -82,12 +82,12 @@ export function App() {
     home: () => html`
       <${Intro} onPlay=${() => setVideoOpen(true)} onContact=${openContact} />
       <${Smartbadge} />
-      <${Spatialview} />
+      <${AugmentedWorkforce} />
+      <${EasyToScale} />
       <div className="scale-retail">
-        <${EasyToScale} />
+        <${Spatialview} />
         <${RetailBrand} />
       </div>
-      <${AugmentedWorkforce} />
       <${Privacy} />
       <${Testimonials} />
       <${Cta} onContact=${openContact} />`,

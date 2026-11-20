@@ -1,5 +1,5 @@
 import { html } from './lib.js';
-import { Cta } from './sections.js';
+import { A, Cta } from './sections.js';
 import { Page, PageHero, Band, Split, Prose, Rows, Stats, Quotes, TextLink } from './blocks.js';
 
 /* ─────────────── Product (copy: "Augmodo Website Content_Product") ─────────────── */
@@ -31,7 +31,8 @@ export function Product({ onContact }) {
         <${Prose}><p>Setup takes less than 20 minutes per store. Plug in the charging dock, hand out the badges and walk the floor. No retrofit, no new infrastructure.</p><//>
       <//>
 
-      <${Split} tone="alt" title="Smartbadge™">
+      <${Split} tone="alt" title="Smartbadge™"
+        media=${html`<img src=${A('photos/smartbadge-front.png')} alt="The Augmodo Smartbadge, front view with its two cameras" />`}>
         <${Stats} items=${[['6', 'Hardware generations in 24 months, each shaped by the associates who wear it.']]} />
         <${Prose} lead><p>The Smartbadge is worn like a standard ID badge. Its cameras face out toward shelves and products, and it runs a full 8 to 10 hour shift on one charge. At the end of the day it goes back in the dock to charge and sync.</p><//>
         <${Rows} items=${[

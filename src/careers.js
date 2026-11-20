@@ -23,7 +23,7 @@ export function CareersHero() {
       <h1 className="hero-title">Join the Team</h1>
       <p className="body careers-intro">We are bringing the most advanced technologies in spatial computing and applying them to the largest market in the world - physical commerce to transform the way people work and shop in the real world. We strive to take the deepest tech and make it easy, approachable, and helpful to the >100m people working in commerce.</p>
       <button className="btn hero-btn" onClick=${toBoard}>Open Positions</button>
-      <div className="careers-image"><img src=${A('city.jpg')} alt="City skyline at dusk" /></div>
+      <div className="careers-image"><img src=${A('photos/careers-earth.jpg')} alt="Earth at night from orbit, city lights spread across a continent" /></div>
     </section>`;
 }
 

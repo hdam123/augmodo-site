@@ -48,7 +48,8 @@ export function Band({ src, alt = '', pos = '50% 50%', tall }) {
 }
 
 // Two-column section: label and heading on the left, content in the 650 column on the right.
-export function Split({ label, title, tone, id, aside, children }) {
+// `media` is an image pinned to the bottom of the left column (after the content on phones).
+export function Split({ label, title, tone, id, aside, media, children }) {
   return html`
     <section className=${`split${tone ? ` split--${tone}` : ''}`} id=${id}>
       <div className="split-head">
@@ -57,6 +58,7 @@ export function Split({ label, title, tone, id, aside, children }) {
         ${aside}
       </div>
       <div className="split-body">${children}</div>
+      ${media && html`<div className="split-media" data-fade>${media}</div>`}
     </section>`;
 }
 

@@ -112,10 +112,14 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
 .hero-title { width: calc(var(--u) * 640); }
 .hero-sub { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 271); width: calc(var(--u) * 427); font-size: calc(var(--u) * 14); line-height: 1.25; }
 .hero-btn { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 311.07); }
+/* Homepage hero in two columns like the split sections: the subline and button sit in the right column
+   (x 730), the subline's first line on the headline's baseline. */
+.intro .hero-sub { left: calc(var(--u) * 730); top: calc(var(--u) * 229.5); }
+.intro .hero-btn { left: calc(var(--u) * 730); top: calc(var(--u) * 269.5); }
 
 .video {
   position: absolute; left: 0; top: 0; width: 100%; height: 100vh; overflow: hidden; background: #000; z-index: 2;
-  transform: translateY(calc(var(--u) * 479));
+  transform: translateY(calc(var(--u) * 358)); /* 48 below the button */
   /* Starts inset to the 60px page margins, opens to full bleed as it rises (Intro timeline). */
   clip-path: inset(0px calc(var(--u) * 60) 0px calc(var(--u) * 60));
   will-change: transform, clip-path;
@@ -256,14 +260,20 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
 .signup-thanks { font-size: calc(var(--u) * 14); color: #fff; }
 .legal { position: absolute; left: calc(var(--u) * 60); right: calc(var(--u) * 60); bottom: calc(var(--u) * 60); display: flex; justify-content: space-between; font-size: calc(var(--u) * 14); line-height: 1.25; color: rgba(255,255,255,.25); }
 .legal-links { display: flex; gap: calc(var(--u) * 20); }
+/* Social icons sit in the middle of the legal row, in its colour, white on hover. */
+.socials { display: flex; align-items: center; gap: calc(var(--u) * 20); }
+.socials a { display: block; width: calc(var(--u) * 18); height: calc(var(--u) * 18); }
+.socials svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+:is(.cta, .footer) .socials a:hover { color: #fff; }
 .legal a:hover { color: rgba(255,255,255,.6); }
 
 /* ── Careers ──────────────────────────── */
 .careers-hero { position: relative; padding-top: calc(var(--u) * 479); background: var(--ink); }
 .careers-intro { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 271); width: calc(var(--u) * 538); }
 .careers-hero .hero-btn { top: calc(var(--u) * 391.07); }
-.careers-image { position: relative; height: calc(var(--u) * 400); overflow: hidden; background: #140e0a; }
-.careers-image img { position: absolute; left: calc(var(--u) * -15); top: calc(var(--u) * -294); width: calc(var(--u) * 1470); height: calc(var(--u) * 1418); max-width: none; will-change: transform; }
+/* Earth at night from orbit: global, not one city. 30% taller than the band so the ±6% parallax never shows an edge. */
+.careers-image { position: relative; height: calc(var(--u) * 400); overflow: hidden; background: #05070c; }
+.careers-image img { position: absolute; left: 0; top: -15%; width: 100%; height: 130%; max-width: none; object-fit: cover; object-position: 50% 62%; will-change: transform; }
 
 .jobs {
   display: grid; grid-template-columns: calc(var(--u) * 670) calc(var(--u) * 650);
@@ -327,6 +337,12 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
 .split-title { width: calc(var(--u) * 538); }
 .split-head .stats { margin-top: calc(var(--u) * 40); width: calc(var(--u) * 427); grid-template-columns: 1fr; }
 .split-body > * + * { margin-top: calc(var(--u) * 28); }
+/* Optional image in the left column, sitting on the section's bottom edge (the 80 below content). */
+/* Placed explicitly, so the head and body need fixed cells too or auto-placement shuffles them. */
+.split-head { grid-column: 1; grid-row: 1; }
+.split-body { grid-column: 2; grid-row: 1; }
+.split-media { grid-column: 1; grid-row: 1; align-self: end; width: calc(var(--u) * 200); }
+.split-media img { display: block; width: 100%; height: auto; }
 /* A single figure in the right column spans it, so its rule runs to the right margin. */
 .split-body .stats:has(.stat:only-child) { grid-template-columns: 1fr; }
 
@@ -623,6 +639,7 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
   .split-head:has(> .eyebrow) { padding-top: 0; }
   .split-head > .eyebrow { position: static; margin-bottom: 12px; }
   .split-head .stats { width: auto; margin-top: 32px; }
+  .split-media { width: 160px; margin-top: 48px; }
   .stats { gap: 28px 16px; }
   .stat-value { font-size: 44px; }
   .prose--lead p, .row-title, .post-title, .art-next-title, .art-lead { font-size: 19px; }
