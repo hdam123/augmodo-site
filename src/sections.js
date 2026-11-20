@@ -82,7 +82,11 @@ export function Header({ page = 'home', slug = '', onContact }) {
 
 /* ─────────────── 1–3 · Hero → video takes over ─────────────── */
 
-export function Intro({ onPlay, onContact }) {
+// Three hero layouts, switchable from the A/B/C button on the homepage:
+//   a  two columns above the video, which rises and opens to full bleed as you scroll
+//   b  the video full bleed from the start, with the copy stacked on it at the left
+//   c  copy in the left third, the video filling the right two-thirds; it widens to full bleed as you scroll
+export function Intro({ onPlay, onContact, variant = 'a' }) {
   const ref = useRef(null);
   useScene(ref, ({ q, one, mm }) => {
     const lines = [...splitLines(one('.hero-title')), ...splitLines(one('.hero-sub'))];
@@ -100,13 +104,33 @@ export function Intro({ onPlay, onContact }) {
     const hideWord = { x: () => -180 * u(), autoAlpha: 0, ease: 'power1.in' };
 
     mm.add(DESKTOP, () => {
+      if (variant === 'c') {
+        gsap.timeline({ scrollTrigger: { trigger: ref.current, start: 'top top', end: () => `+=${vh() * 0.9}`, pin: true, scrub: 1, invalidateOnRefresh: true } })
+          .fromTo(one('.video'), { left: '33.333%', width: '66.667%' }, { left: '0%', width: '100%', ease: 'power1.inOut', duration: 1 }, 0)
+          .to(one('.hero-copy'), { autoAlpha: 0, ease: 'none', duration: 0.5 }, 0)
+          .to(logo.word, { ...hideWord, duration: 0.6 }, 0)
+          .to(logo.purple, { autoAlpha: 0, duration: 0.25 }, 0.6)
+          .to(logo.white, { autoAlpha: 1, duration: 0.25 }, 0.6)
+          .to({}, { duration: 0.2 });
+        return;
+      }
+      if (variant === 'b') {
+        // Video already fills the screen: hold briefly while the copy fades and the wordmark tucks away.
+        gsap.timeline({ scrollTrigger: { trigger: ref.current, start: 'top top', end: () => `+=${vh() * 0.6}`, pin: true, scrub: 1, invalidateOnRefresh: true } })
+          .to(one('.hero-copy'), { autoAlpha: 0, ease: 'none', duration: 0.6 }, 0)
+          .to(logo.word, { ...hideWord, duration: 0.6 }, 0)
+          .to(logo.purple, { autoAlpha: 0, duration: 0.25 }, 0.5)
+          .to(logo.white, { autoAlpha: 1, duration: 0.25 }, 0.5)
+          .to({}, { duration: 0.2 });
+        return;
+      }
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: ref.current, start: 'top top', end: () => `+=${vh() * 1.1}`,
           pin: true, scrub: 1, invalidateOnRefresh: true,
         },
       });
-      tl.fromTo(one('.video'), { y: () => 358 * u() }, { y: 0, ease: 'none', duration: 1 })
+      tl.fromTo(one('.video'), { y: () => 288 * u() }, { y: 0, ease: 'none', duration: 1 })
         // thumbnail sits inside the 60px page margins, then opens to full screen as it rises
         .fromTo(one('.video'),
           { clipPath: () => `inset(0px ${60 * u()}px 0px ${60 * u()}px)` },
@@ -128,7 +152,7 @@ export function Intro({ onPlay, onContact }) {
   });
 
   return html`
-    <section className="intro" id="top" ref=${ref}>
+    <section className=${`intro intro--${variant}`} id="top" ref=${ref}>
       <div className="hero-copy">
         <h1 className="hero-title">Augment your<br />workforce</h1>
         <p className="hero-sub">Wearable AI assistants for the physical workforce</p>
@@ -136,6 +160,7 @@ export function Intro({ onPlay, onContact }) {
       </div>
       <div className="video">
         <img className="video-thumb" src=${A('video-thumb-lanyard.jpg')} alt="Store associate putting on the Augmodo Smartbadge" />
+        ${variant === 'b' && html`<div className="video-shade" />`}
         <button className="play" onClick=${onPlay} aria-label="Play video">
           <img src=${A('play.svg')} alt="" />
         </button>
@@ -549,6 +574,16 @@ export function Footer() {
       </form>
       <${Legal} />
     </footer>`;
+}
+
+/* ─────────────── Homepage hero A/B/C switch ─────────────── */
+
+export function HeroSwitch({ variant, onChange }) {
+  return html`
+    <div className="ab-switch" role="radiogroup" aria-label="Homepage hero version">
+      ${['a', 'b', 'c'].map((v) => html`
+        <button key=${v} role="radio" aria-checked=${variant === v} className=${variant === v ? 'on' : ''} onClick=${() => onChange(v)}>${v.toUpperCase()}</button>`)}
+    </div>`;
 }
 
 /* ─────────────── Video placeholder overlay ─────────────── */

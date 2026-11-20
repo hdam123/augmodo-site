@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { html, ScrollTrigger, syncUnit } from './lib.js';
 import {
   Header, Intro, Smartbadge, Spatialview, EasyToScale, RetailBrand,
-  AugmentedWorkforce, Privacy, Testimonials, Cta, Footer, VideoOverlay,
+  AugmentedWorkforce, Privacy, Testimonials, Cta, Footer, VideoOverlay, HeroSwitch,
 } from './sections.js';
 import { CareersHero, JobBoard } from './careers.js';
 import { ContactOverlay } from './contact.js';
@@ -24,6 +24,9 @@ export function App() {
   const [route, setRoute] = useState(routeOf);
   const [videoOpen, setVideoOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  // Homepage hero version (A/B/C). Remembered per browser for convenience; defaults to A.
+  const [hero, setHeroState] = useState(() => { try { const v = localStorage.getItem('augmodo-hero'); return ['a', 'b', 'c'].includes(v) ? v : 'a'; } catch { return 'a'; } });
+  const setHero = (v) => { try { localStorage.setItem('augmodo-hero', v); } catch {} window.scrollTo(0, 0); setHeroState(v); };
   // Remount on width changes so line splits and pinned timelines are rebuilt for the new layout.
   const [layoutKey, setLayoutKey] = useState(0);
 
@@ -63,7 +66,7 @@ export function App() {
 
   const openContact = (e) => { e?.preventDefault(); setContactOpen(true); };
   const [page, slug] = route.split('/');
-  const key = `${route}-${layoutKey}`;
+  const key = `${route}-${layoutKey}-${hero}`; // switching the hero rebuilds the page and its pins
   const body = {
     product: () => html`<${Product} onContact=${openContact} />`,
     solutions: () => {
@@ -80,7 +83,7 @@ export function App() {
       <${JobBoard} />
       <${Footer} />`,
     home: () => html`
-      <${Intro} onPlay=${() => setVideoOpen(true)} onContact=${openContact} />
+      <${Intro} variant=${hero} onPlay=${() => setVideoOpen(true)} onContact=${openContact} />
       <${Smartbadge} />
       <${AugmentedWorkforce} />
       <${EasyToScale} />
@@ -97,6 +100,7 @@ export function App() {
     <${React.Fragment}>
       <${Header} key=${`h${key}`} page=${page} slug=${slug} onContact=${openContact} />
       <main key=${key} className=${`page page--${page}`}>${body()}</main>
+      ${page === 'home' && html`<${HeroSwitch} variant=${hero} onChange=${setHero} />`}
       <${VideoOverlay} open=${videoOpen} onClose=${() => setVideoOpen(false)} />
       <${ContactOverlay} open=${contactOpen} onClose=${() => setContactOpen(false)} />
     <//>`;

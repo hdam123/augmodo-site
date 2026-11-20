@@ -114,12 +114,13 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
 .hero-btn { position: absolute; left: calc(var(--u) * 60); top: calc(var(--u) * 311.07); }
 /* Homepage hero in two columns like the split sections: the subline and button sit in the right column
    (x 730), the subline's first line on the headline's baseline. */
-.intro .hero-sub { left: calc(var(--u) * 730); top: calc(var(--u) * 229.5); }
-.intro .hero-btn { left: calc(var(--u) * 730); top: calc(var(--u) * 269.5); }
+.intro .hero-title { top: calc(var(--u) * 132.23); } /* 70 higher than the inner pages, so more of the video shows on load */
+.intro .hero-sub { left: calc(var(--u) * 730); top: calc(var(--u) * 159.5); }
+.intro .hero-btn { left: calc(var(--u) * 730); top: calc(var(--u) * 199.5); }
 
 .video {
   position: absolute; left: 0; top: 0; width: 100%; height: 100vh; overflow: hidden; background: #000; z-index: 2;
-  transform: translateY(calc(var(--u) * 358)); /* 48 below the button */
+  transform: translateY(calc(var(--u) * 288)); /* 48 below the button */
   /* Starts inset to the 60px page margins, opens to full bleed as it rises (Intro timeline). */
   clip-path: inset(0px calc(var(--u) * 60) 0px calc(var(--u) * 60));
   will-change: transform, clip-path;
@@ -134,6 +135,32 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
 }
 .play img { width: 100%; height: 100%; }
 .play:hover { transform: translate(-50%, -50%) scale(1.06); }
+
+/* Version B: the video is full bleed from the first frame; headline, subline and button stack on it at
+   the left, over a soft shade so white text holds on the bright photo. The play button stays centred on screen. */
+.intro--b .video { transform: none; clip-path: none; z-index: 1; }
+.intro--b .hero-copy { z-index: 3; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 0 calc(var(--u) * 60); }
+.intro--b .hero-title, .intro--b .hero-sub, .intro--b .hero-btn { position: static; }
+.intro--b .hero-title { width: calc(var(--u) * 640); }
+.intro--b .hero-sub { width: calc(var(--u) * 427); margin-top: calc(var(--u) * 20); }
+.intro--b .hero-btn { margin-top: calc(var(--u) * 28); }
+.video-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(10,10,12,.72) 0%, rgba(10,10,12,.45) 38%, rgba(10,10,12,0) 65%); pointer-events: none; }
+
+/* Version C (desktop): copy stacked in the left third, the whole video thumbnail framed in the right two-thirds,
+   full height. Phones fall back to version A's stacked layout. */
+@media (min-width: 768px) {
+  .intro--c .video { left: 33.333%; width: 66.667%; transform: none; clip-path: none; }
+  .intro--c .hero-copy { right: auto; width: 33.333%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 0 calc(var(--u) * 40) 0 calc(var(--u) * 60); }
+  .intro--c .hero-title, .intro--c .hero-sub, .intro--c .hero-btn { position: static; width: auto; }
+  .intro--c .hero-sub { margin-top: calc(var(--u) * 20); }
+  .intro--c .hero-btn { margin-top: calc(var(--u) * 28); }
+}
+
+/* The A/B/C switch: small, fixed at the bottom centre of the homepage. */
+.ab-switch { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 60; display: flex; padding: 3px; gap: 2px; background: rgba(20,20,24,.75); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); border-radius: 999px; }
+.ab-switch button { min-width: 34px; height: 26px; padding: 0 10px; border: 0; border-radius: 999px; background: none; color: rgba(255,255,255,.6); font-size: 12px; font-weight: 500; letter-spacing: .04em; cursor: pointer; transition: background .2s, color .2s; }
+.ab-switch button:hover { color: #fff; }
+.ab-switch button.on { background: var(--violet); color: #fff; }
 
 /* ── Shared pinned panel ──────────────── */
 .panel { position: relative; height: 100vh; overflow: hidden; }
@@ -567,6 +594,11 @@ h1, h2, p, figure, blockquote, ul { margin: 0; padding: 0; }
   .hero-title, .hero-sub, .hero-btn { position: static; width: auto; }
   .hero-sub { margin: 16px 0 24px; max-width: 300px; }
   .video { position: relative; height: 62vh; transform: none; clip-path: none; }
+  .intro--b { height: 100svh; }
+  .intro--b .video { position: absolute; inset: 0; height: 100%; }
+  .intro--b .hero-copy { position: absolute; inset: 0; justify-content: flex-end; padding: 0 20px 96px; }
+  .intro--b .hero-title, .intro--b .hero-sub { width: auto; }
+  .intro--b .video-shade { background: linear-gradient(0deg, rgba(10,10,12,.8) 0%, rgba(10,10,12,.4) 45%, rgba(10,10,12,0) 70%); }
   .play { width: 84px; height: 84px; }
 
   .copy-block, .badge-title, .badge-para { left: 20px; width: calc(100% - 40px); top: 96px; }
