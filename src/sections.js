@@ -195,8 +195,8 @@ export function Smartbadge() {
         <img src=${A('badge.jpg')} alt="Store associate wearing the Augmodo Smartbadge" />
       </div>
       <div className="text-scrim" aria-hidden="true" />
-      <h2 className="h-display badge-title">100% Passive<br />Smartbadge™</h2>
-      <p className="body badge-para">Empower your greatest asset, your people, with no operational changes, at 100x the cost effectiveness of competing hardware solutions.</p>
+      <h2 className="h-display badge-title">Enable Humans with<br />AI Smartbadge™</h2>
+      <p className="body badge-para">Empower your greatest asset, your people, with no operational changes, at 100x the cost effectiveness of competing hardware solutions. Technology that makes your team more capable. Fewer tedious audits, safer shifts and more valuable roles, all with a passive Smartbadge.</p>
     </section>`;
 }
 
@@ -249,7 +249,7 @@ export function Spatialview() {
       <div className="spatial-bg"><img src=${A('store.jpg')} alt="" /></div>
       <div className="text-scrim" aria-hidden="true" />
       <div className="copy-block">
-        <h2 className="h-display sv-title">Real-time<br />Spatialview™ of Every Site</h2>
+        <h2 className="h-display sv-title">Real-time<br />SpatialView™ of Every Site</h2>
         <p className="body sv-para">Pour your morning coffee, open your laptop, and check any site’s conditions in real time. With store level Realograms™ you can find and fix problems when they happen, not when sales dip.</p>
       </div>
       <div className="screen">
@@ -304,7 +304,7 @@ export function EasyToScale() {
       <div className="scale-bg"><img src=${A('city.jpg')} alt="City skyline" /></div>
       <div className="copy-block">
         <h2 className="h-display ets-title">Easy To Scale</h2>
-        <p className="body ets-para">Low capex, 100% passive for associates, and less than 20 minutes to set up a new site with coverage that compounds.</p>
+        <p className="body ets-para">You can see your product in any location. Low capex, 100% passive for associates, and less than 20 minutes to set up a new site with coverage that compounds.</p>
       </div>
       ${PINS.map((p, i) => html`
         <div className="pin" key=${i} style=${{ left: U(p.x), top: U(p.y), '--px': p.x / 14.4, '--py': p.y / 8.1 }}>
@@ -328,7 +328,7 @@ export function RetailBrand() {
   const first = useRef(true);
 
   useScene(ref, ({ q, one, mm }) => {
-    const lines = [...splitLines(one('.rb-title')), ...splitLines(one('.rb-para'))];
+    const lines = splitLines(one('.rb-title'));
     const tl = gsap.timeline({ scrollTrigger: { trigger: ref.current, start: 'top 75%', toggleActions: 'play none none reverse' } });
     tl.from(q('.toggle-row'), { autoAlpha: 0, y: 10, duration: 0.5 })
       .from(lines, { ...LINE_IN, duration: 0.9 }, 0.1)
@@ -367,7 +367,6 @@ export function RetailBrand() {
         <button role="tab" aria-selected=${mode === 'brand'} className=${mode === 'brand' ? 'on' : ''} onClick=${toggle('brand')}>BRANDS</button>
       </div>
       <h2 className="h-display rb-title">Real-time Data and Trends</h2>
-      <p className="body rb-para">Empower your greatest asset, your people, with no operational changes, while being 100x cheaper hardware than competing solutions.</p>
       <ul className="rb-list">
         ${FEATURES[mode].map((f, i) => html`
           <li key=${i}><span className="rb-rule" /><span className="rb-mask"><span className="rb-text">${f}</span></span></li>`)}
@@ -411,8 +410,8 @@ export function AugmentedWorkforce() {
 
   return html`
     <section className="principle principle--one" ref=${ref}>
-      <h2 className="h-display pr-title">Enable, Not Replace</h2>
-      <p className="body pr-para">Technology that makes your team more capable. Fewer tedious audits, faster ecommerce picking, safer shifts and more valuable roles, all with a passive Smartbadge.</p>
+      <h2 className="h-display pr-title">Digitize Your Space<br />Passively</h2>
+      <p className="body pr-para">AI that works where your people work. Your team already walks the floor, and now that work digitizes it. The Smartbadge passively captures shelves, aisles and stockrooms as people go about their day, giving you a live view of every location from any screen.</p>
       <div className="pr-media">
         <div className="aw-photo"><img src=${A('store.jpg')} alt="Grocery produce aisle" /></div>
         <div className="pr-reveal aw-scan">
@@ -422,6 +421,8 @@ export function AugmentedWorkforce() {
     </section>`;
 }
 
+// The full photo first, then the point-cloud effect sweeps down over the people only (privacy-people.png
+// is a hand-traced mask of every person in the photo, in the photo's own square, placed like object-fit: cover).
 export function Privacy() {
   const ref = useRef(null);
   usePrinciple(ref, (tl, el, at) => tl.fromTo(el,
@@ -434,8 +435,8 @@ export function Privacy() {
       <p className="body pr-para">Augmodo sees the work, not the worker. We run state-of-the-art privacy filtering on premise, so only shelf data is processed. People in a frame are blurred in the store before any data leaves it, over 99% of frames are discarded within minutes, and we do not track customers.</p>
       <div className="pr-media">
         <img className="pv-photo" src=${A('privacy.jpg')} alt="Busy supermarket from above" />
-        <div className="pr-reveal pv-scan">
-          <${PointCloud} src=${A('privacy.jpg')} box=${[531, 346]} imgRect=${[-34, -311, 680, 680]} params=${PRIVACY_PARAMS} />
+        <div className="pr-reveal pv-scan" style=${{ '--people': `url(${A('privacy-people.png')})` }}>
+          <${PointCloud} src=${A('privacy.jpg')} box=${[650, 680]} imgRect=${[-15, 0, 680, 680]} params=${PRIVACY_PARAMS} />
         </div>
       </div>
     </section>`;
@@ -443,22 +444,51 @@ export function Privacy() {
 
 /* ─────────────── 21–22 · Testimonials ─────────────── */
 
+// Copy: "Augmodo Website Content" PDF. The quotes share one cell and cycle every 8s (or by the dots),
+// so the band never changes height.
+const TESTIMONIALS = [
+  ['Augmodo was quick to set up and impressive in the speed to value. Within days I had deep data resulting in both micro and macro insights. Within a month our on-shelf availability improved by 30% and it continues to improve!', 'Head of Operations, Drug Retailer'],
+  ['We can see where the gaps are, whether stock is in store to fill them, and what sales we’re missing – by store, category, brand, state, even POG type. We can be incredibly precise.', 'Commercial Sales Lead, Leading Global FMCG Supplier'],
+  ['The biggest shift is speed and confidence. We’ve moved from historical averages and outdated images to live, store-specific insight we can act on the same day.', 'National Account Team, Health & Beauty Supplier'],
+  ['We’re no longer reacting to gaps – we’re preventing them before they occur, especially around NPD launches, key consumption periods and weekend trade. All with one goal: driving sales.', 'Demand Planning Supplier Lead'],
+];
+
 export function Testimonials() {
   const ref = useRef(null);
+  const [i, setI] = useState(0);
+  const first = useRef(true);
   useScene(ref, ({ one }) => {
     const tl = gsap.timeline({ scrollTrigger: { trigger: ref.current, start: 'top 75%', toggleActions: 'play none none reverse' } });
     tl.from(splitLines(one('.t-title')), { ...LINE_IN, duration: 0.9 })
-      .from(splitLines(one('.quote blockquote')), { ...LINE_IN, duration: 0.9, stagger: 0.08 }, 0.15)
-      .from(one('.quote figcaption'), { autoAlpha: 0, y: 10, duration: 0.6, ease: 'power3.out' }, 0.6);
+      .from(one('.t-quotes'), { autoAlpha: 0, y: 18, duration: 0.8, ease: 'power3.out' }, 0.15);
   });
+
+  useEffect(() => {
+    const t = setTimeout(() => setI((i + 1) % TESTIMONIALS.length), 8000);
+    return () => clearTimeout(t);
+  }, [i]);
+
+  useEffect(() => {
+    if (first.current) { first.current = false; return; }
+    gsap.fromTo(ref.current.querySelectorAll('.quote.on > *'), { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.7, stagger: 0.08, ease: 'power3.out' });
+  }, [i]);
 
   return html`
     <section className="testimonials" ref=${ref}>
       <h2 className="h-display t-title">What our partners are<br />saying about us.</h2>
-      <figure className="quote">
-        <blockquote>“Augmodo was quick to set up and impressive in the speed to value. Within days I had deep data resulting in both micro and macro insights. Within a month our on-shelf availability improved by 30% and it continues to improve!”</blockquote>
-        <figcaption>Head of Operations, Drug Retailer</figcaption>
-      </figure>
+      <div className="t-quotes">
+        <div className="quote-stack">
+          ${TESTIMONIALS.map(([quote, who], n) => html`
+            <figure key=${n} className=${`quote quote--flow${n === i ? ' on' : ''}`} aria-hidden=${n !== i}>
+              <blockquote>“${quote}”</blockquote>
+              <figcaption>${who}</figcaption>
+            </figure>`)}
+        </div>
+        <div className="dots" role="tablist" aria-label="Testimonials">
+          ${TESTIMONIALS.map((_, n) => html`
+            <button key=${n} role="tab" aria-selected=${n === i} aria-label=${`Quote ${n + 1}`} className=${n === i ? 'on' : ''} onClick=${() => setI(n)} />`)}
+        </div>
+      </div>
     </section>`;
 }
 
